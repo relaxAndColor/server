@@ -66,6 +66,7 @@ router.post('/', function(req, res) {
           user.facebook = profile.id;
           user.picture = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
           user.displayName = profile.name;
+          user.email = profile.email;
           user.save(function() {
             var token = createToken(user);
             res.send({ token: token });
