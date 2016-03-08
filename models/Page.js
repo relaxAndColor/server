@@ -19,8 +19,7 @@ const Page = new Schema({
   views: {
     type: Number,
     require: true
-  },
-  user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+  }
 });
 
 module.exports = mongoose.model('Page', Page);
