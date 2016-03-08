@@ -16,6 +16,10 @@ const Page = new Schema({
     type: String,
     require: true
   },
+  views: {
+    type: Number,
+    require: true
+  },
   user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
