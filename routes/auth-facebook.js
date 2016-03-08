@@ -17,6 +17,7 @@ router.post('/', function(req, res) {
   var fields = ['id', 'email', 'first_name', 'last_name', 'name'];
   var accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
   var graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + fields.join(',');
+  console.log(process.env.CLIENT_ID);
   var params = {
     code: req.body.code,
     // client_id: req.body.clientId,
