@@ -6,3 +6,15 @@ router.get('/', function(req, res) {
 });
 
 module.exports = router;
+
+// Get all svg images
+//   -Paged to 10 at a time by default
+//   -Filterable
+
+// Get someones personal gallery, what theyre working on
+
+// Upload to all images/your own gallery
+
+// Delete from your own gallery
+
+// Get 1 image, add to your own gallery
