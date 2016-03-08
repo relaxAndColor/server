@@ -87,7 +87,8 @@
 
 	app.config(['$authProvider', function ($authProvider) {
 	  $authProvider.facebook({
-	    clientId: '932535226864625'
+	    // clientId: '932535226864625'
+	    clientId: '932525373532277'
 	  });
 	}]);
 
