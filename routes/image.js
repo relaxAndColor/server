@@ -2,10 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Page = require('../models/Page');
 
+//GET IMAGES
+//QUERY PARAMS: ?page=1&limit=10&category=animals&sort=-views
+
 router.get('/', function(req, res) {
+  var search = {};
+  if (req.query.category) {
+    search.category = req.query.category;
+  }
   var skip = ( (+req.query.page || 1) - 1) * (req.query.limit || 10);
-  var countQuery = Page.count({ category: req.query.category });
-  var documentQuery = Page.find({ category: req.query.category })
+  var countQuery = Page.count( search );
+  var documentQuery = Page.find( search )
     .skip( skip )
     .limit(req.query.limit || 10)
     .sort(req.query.sort || 'title');

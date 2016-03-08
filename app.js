@@ -33,8 +33,8 @@ var jwtCheck = jwt({
 
 app.use('/auth/facebook', authFacebook);
 app.use('/auth/email', authEmail);
-app.use('/user', jwtCheck, user);
-app.use('/image', jwtCheck, image);
+app.use('/api/user', jwtCheck, user);
+app.use('/api/image', jwtCheck, image);
 
 app.use(function(err, req, res, next) {
   res.status(500).send(err);
