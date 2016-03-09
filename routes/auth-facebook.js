@@ -59,7 +59,14 @@ router.post('/', function(req, res) {
         // Step 3. Create a new user account or return an existing one.
         User.findOne({ facebook: profile.id }, function(err, existingUser) {
           if (existingUser) {
-            var token = createToken(existingUser);
+            var data = {
+              displayName: existingUser.displayName,
+              email: existingUser.email,
+              profile: existingUser.profile,
+              _id: existingUser._id,
+              admin: existingUser.admin
+            };
+            var token = createToken(data);
             return res.send({ token: token });
           }
           var user = new User();

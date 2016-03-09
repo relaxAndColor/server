@@ -25,7 +25,8 @@ router.post('/login', function(req, res) {
         displayName: user.displayName,
         email: user.email,
         profile: user.profile,
-        _id: user._id
+        _id: user._id,
+        admin: user.admin
       }
       res.send({ token: createToken(payload) });
     });
