@@ -20,6 +20,8 @@ const GalleryPage = new Schema({
     type: Number,
     require: true
   }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('GalleryPage', GalleryPage);

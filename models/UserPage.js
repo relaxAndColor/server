@@ -10,6 +10,8 @@ const UserPage = new Schema({
     require: true
   },
   original: {type: mongoose.Schema.Types.ObjectId, ref: 'Page'}
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('UserPage', UserPage);
