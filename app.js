@@ -9,7 +9,8 @@ const jwt = require('express-jwt');
 const authFacebook = require('./routes/auth-facebook');
 const authEmail = require('./routes/auth-email');
 const user = require('./routes/user');
-const image = require('./routes/gallery');
+const gallery = require('./routes/gallery');
+const personal = require('./routes/personal');
 
 app.use(cors());
 app.options('*', cors());
@@ -34,7 +35,8 @@ var jwtCheck = jwt({
 app.use('/auth/facebook', authFacebook);
 app.use('/auth/email', authEmail);
 app.use('/api/user', jwtCheck, user);
-app.use('/api/gallery', jwtCheck, image);
+app.use('/api/gallery', jwtCheck, gallery);
+app.use('/api/personal', jwtCheck, personal);
 
 app.use(function(err, req, res, next) {
   res.status(500).send(err);
