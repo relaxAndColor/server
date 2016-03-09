@@ -37,6 +37,17 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/:image_id', function(req, res) {
+  Page.findById(req.params.image_id)
+  .then( img => {
+    res.send(img);
+  })
+  .catch( err => {
+    console.log(err);
+    res.status(500).send('error occurred');
+  });
+});
+
 router.post('/', adminCheck, function(req, res) {
   var newPage = new Page({
     title: req.body.title,
