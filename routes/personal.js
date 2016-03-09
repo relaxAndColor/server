@@ -5,7 +5,7 @@ const UserPage = require('../models/UserPage');
 
 //GET ALL IMAGES
 router.get('/', function(req, res) {
-  UserPage.find({ user: req.user._id})
+  UserPage.find({ user: req.user._id}).sort('-updatedAt')
   .then( images => {
     res.send(images);
   })
@@ -28,14 +28,16 @@ router.get('/:image_id', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  GalleryPage.findById(req.body.original)
-  .then( img => {
+  var updateQuery = GalleryPage.update({_id: req.body.original}, { $inc: {views: 1} });
+  var searchQuery = GalleryPage.findById(req.body.original);
+  Promise.all([updateQuery, searchQuery])
+  .then( images => {
     var newPage = new UserPage({
       user: req.user._id,
-      svg: img.svg,
+      svg: images[1].svg,
       original: req.body.original
     });
-    return newPage.save()
+    return newPage.save();
   })
   .then( savedPage => {
     res.send(savedPage);
