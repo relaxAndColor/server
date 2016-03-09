@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Page = require('../models/Page');
 
+function adminCheck (req, res, next) {
+  if (!req.user.admin) {
+    res.status(401).send('Not Authorized');
+  } else {
+    next();
+  }
+};
+
 //GET IMAGES
 //QUERY PARAMS: ?page=1&limit=10&category=animals&sort=-views
 
@@ -29,7 +37,7 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/', function(req, res) {
+router.post('/', adminCheck, function(req, res) {
   var newPage = new Page({
     title: req.body.title,
     category: req.body.category,
@@ -46,7 +54,7 @@ router.post('/', function(req, res) {
   });
 });
 
-router.patch('/', function(req, res) {
+router.patch('/', adminCheck, function(req, res) {
   Page.findOneAndUpdate({_id: req.body.id}, req.body, {new: true})
   .then( updatedPage => {
     res.send(updatedPage);
@@ -57,7 +65,7 @@ router.patch('/', function(req, res) {
   })
 });
 
-router.delete('/', function(req, res) {
+router.delete('/', adminCheck, function(req, res) {
   Page.findByIdAndRemove(req.body.id)
   .then( () => {
     res.send('delete success');

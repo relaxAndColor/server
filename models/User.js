@@ -8,7 +8,8 @@ const User = new Schema({
   displayName: String,
   picture: String,
   facebook: String,
-  profile: String
+  profile: String,
+  admin: Boolean
 });
 
 User.pre('save', function(next) {
