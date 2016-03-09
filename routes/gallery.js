@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Page = require('../models/Page');
+const GalleryPage = require('../models/GalleryPage');
 
 function adminCheck (req, res, next) {
   if (!req.user.admin) {
@@ -19,8 +19,8 @@ router.get('/', function(req, res) {
     search.category = req.query.category;
   }
   var skip = ( (+req.query.page || 1) - 1) * (req.query.limit || 10);
-  var countQuery = Page.count( search );
-  var documentQuery = Page.find( search )
+  var countQuery = GalleryPage.count( search );
+  var documentQuery = GalleryPage.find( search )
     .skip( skip )
     .limit(req.query.limit || 10)
     .sort(req.query.sort || 'title');
@@ -38,7 +38,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:image_id', function(req, res) {
-  Page.findById(req.params.image_id)
+  GalleryPage.findById(req.params.image_id)
   .then( img => {
     res.send(img);
   })
@@ -49,7 +49,7 @@ router.get('/:image_id', function(req, res) {
 });
 
 router.post('/', adminCheck, function(req, res) {
-  var newPage = new Page({
+  var newPage = new GalleryPage({
     title: req.body.title,
     category: req.body.category,
     svg: req.body.svg,
@@ -65,19 +65,19 @@ router.post('/', adminCheck, function(req, res) {
   });
 });
 
-router.patch('/', adminCheck, function(req, res) {
-  Page.findOneAndUpdate({_id: req.body.id}, req.body, {new: true})
+router.patch('/:image_id', adminCheck, function(req, res) {
+  GalleryPage.findOneAndUpdate({_id: req.params.image_id}, req.body, {new: true})
   .then( updatedPage => {
     res.send(updatedPage);
   })
   .catch( err => {
     console.log(err);
     res.status(500).send('error occurred');
-  })
+  });
 });
 
-router.delete('/', adminCheck, function(req, res) {
-  Page.findByIdAndRemove(req.body.id)
+router.delete('/:image_id', adminCheck, function(req, res) {
+  GalleryPage.findByIdAndRemove(req.params.image_id)
   .then( () => {
     res.send('delete success');
   })
