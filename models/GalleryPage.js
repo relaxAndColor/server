@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 //holds unedited svg images
 
-const Page = new Schema({
+const GalleryPage = new Schema({
   title: {
     type: String,
     require: true
@@ -22,4 +22,4 @@ const Page = new Schema({
   }
 });
 
-module.exports = mongoose.model('Page', Page);
+module.exports = mongoose.model('GalleryPage', GalleryPage);

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 //holds edited svg images
 
-const Gallery = new Schema({
+const UserPage = new Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   svg: {
     type: String,
@@ -12,4 +12,4 @@ const Gallery = new Schema({
   original: {type: mongoose.Schema.Types.ObjectId, ref: 'Page'}
 });
 
-module.exports = mongoose.model('Gallery', Gallery);
+module.exports = mongoose.model('UserPage', UserPage);
