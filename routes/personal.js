@@ -5,7 +5,7 @@ const UserPage = require('../models/UserPage');
 
 //GET ALL IMAGES
 router.get('/', function(req, res) {
-  UserPage.find({ user: req.user._id}).sort('-updatedAt')
+  UserPage.find({ user: req.user._id}).sort('-updatedAt').populate('original', 'title')
   .then( images => {
     res.send(images);
   })

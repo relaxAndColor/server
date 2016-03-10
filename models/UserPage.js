@@ -9,7 +9,7 @@ const UserPage = new Schema({
     type: String,
     require: true
   },
-  original: {type: mongoose.Schema.Types.ObjectId, ref: 'Page'}
+  original: {type: mongoose.Schema.Types.ObjectId, ref: 'GalleryPage'}
 }, {
   timestamps: true
 });
