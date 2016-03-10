@@ -27,7 +27,7 @@ router.post('/login', function(req, res) {
         profile: user.profile,
         _id: user._id,
         admin: user.admin
-      }
+      };
       res.send({ token: createToken(payload) });
     });
   });
@@ -58,7 +58,7 @@ router.post('/signup', function(req, res) {
         email: req.body.email,
         profile: req.body.profile,
         _id: result._id
-      }
+      };
       res.send({ token: createToken(payload) });
     });
   });

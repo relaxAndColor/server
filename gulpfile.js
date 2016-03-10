@@ -1,24 +1,22 @@
-"use strict";
-
 var gulp = require('gulp');
-var mocha = require('gulp-mocha');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
+var gulpmocha = require('gulp-mocha');
 
-gulp.task('run-tests', function() {
-  return gulp.src(['./tests/**/*.js'], { read: false })
-    .pipe(mocha());
+gulp.task('run-tests', ['lint'], function() {
+  return gulp.src(['test/**/*.js'], { read: false })
+    .pipe(gulpmocha());
 });
 
-gulp.task('watch-test', function() {
-  gulp.watch(['./src/*.js','./src/**/*.js', './tests/**/*.js'], ['run-tests', 'lint']);
+gulp.task('watch-files', function() {
+  gulp.watch(['./*.js', 'routes/*.js', './test/**/*.js'], ['run-tests']);
 });
 
 gulp.task('lint', function() {
-  return gulp.src(['./src/*.js','./src/**/*.js', '!./src/public/bundle.js','./tests/**/*.js'])
+  return gulp.src(['./*.js', 'test/**/*.js', 'routes/*.js', 'models/*.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter(stylish));
 });
 
 gulp.task('default', ['run-tests']);
-gulp.task('test', ['run-tests', 'watch-test', 'lint']);
+gulp.task('test', ['run-tests', 'watch-files']);

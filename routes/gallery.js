@@ -8,7 +8,7 @@ function adminCheck (req, res, next) {
   } else {
     next();
   }
-};
+}
 
 //GET IMAGES
 //QUERY PARAMS: ?page=1&limit=10&category=animals&sort=-views
