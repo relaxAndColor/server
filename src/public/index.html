@@ -7,6 +7,10 @@
   <body>
     <main-header main-title='Relax and Color'> </main-header>
     <main-nav> </main-nav>
-    <main ui-view> </main>
+
+    <div ng-hide='root.waiting'>
+      <main ui-view> </main>
+    </div>
+    <loader ng-show='root.waiting'> </loader>
   <script src="bundle.js"></script></body>
 </html>

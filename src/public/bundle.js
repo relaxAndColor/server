@@ -45,44 +45,72 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+	/* Styling */
 	
-	/* Angular Vendors */
+	__webpack_require__(1);
 	
-	var _angular = __webpack_require__(1);
+	var _angular = __webpack_require__(5);
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _angularUiRouter = __webpack_require__(3);
+	var _angularUiRouter = __webpack_require__(7);
 	
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 	
-	var _angularMessages = __webpack_require__(4);
+	var _angularMessages = __webpack_require__(8);
 	
 	var _angularMessages2 = _interopRequireDefault(_angularMessages);
 	
-	var _satellizer = __webpack_require__(6);
+	var _angularResource = __webpack_require__(10);
+	
+	var _angularResource2 = _interopRequireDefault(_angularResource);
+	
+	var _angularJwt = __webpack_require__(12);
+	
+	var _angularJwt2 = _interopRequireDefault(_angularJwt);
+	
+	__webpack_require__(14);
+	
+	var _satellizer = __webpack_require__(15);
 	
 	var _satellizer2 = _interopRequireDefault(_satellizer);
 	
-	var _stateProvider = __webpack_require__(7);
+	var _stateProvider = __webpack_require__(16);
 	
 	var _stateProvider2 = _interopRequireDefault(_stateProvider);
 	
-	var _directives = __webpack_require__(20);
+	var _factories = __webpack_require__(37);
+	
+	var _factories2 = _interopRequireDefault(_factories);
+	
+	var _directives = __webpack_require__(42);
 	
 	var _directives2 = _interopRequireDefault(_directives);
 	
+	var _stateControllers = __webpack_require__(59);
+	
+	var _stateControllers2 = _interopRequireDefault(_stateControllers);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/* UI-Router State Provider Config */
-	
-	
-	var app = _angular2.default.module('rcApp', [_angularUiRouter2.default, _angularMessages2.default, _satellizer2.default, _directives2.default]);
 	
 	/* Directives */
 	
 	
+	/* UI-Router State Provider Config */
+	
+	
+	var app = _angular2.default.module('rcApp', [_angularUiRouter2.default, _angularMessages2.default, _angularResource2.default, _angularJwt2.default, _stateControllers2.default, 'mp.colorPicker', _satellizer2.default, _directives2.default, _factories2.default]);
+	
+	/*State Controllers */
+	
+	
+	/* Factories */
+	
+	
 	/* Authorization */
+	
+	
+	/* Vendors */
 	
 	
 	app.config(['$authProvider', function ($authProvider) {
@@ -95,15 +123,25 @@
 	app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 	  $urlRouterProvider.otherwise('/home');
 	  (0, _stateProvider2.default)($stateProvider);
-	}]);
-	// .run(['$rootScope', '$auth','$state', function($rootScope, $auth, $state) {
-	//     $rootScope.$on('$stateChangeStart', function(event,toState, toParms){
-	//       if(toState.data && toState.data.auth && !$auth.isAuthenticated()) {
-	//         event.preventDefault();
-	//         $state.transitionTo('home');
-	//       }
-	//     });
-	// }]);
+	}]).run(function ($rootScope, $auth, $state, UserService) {
+	  $rootScope.root = {};
+	  $rootScope.root.wating = false;
+	  UserService.setUser();
+	  $rootScope.$on('$stateChangeStart', function (event, toState, toParms) {
+	    if (toState.data && toState.data.authReq && !$auth.isAuthenticated()) {
+	      event.preventDefault();
+	      $state.transitionTo('home');
+	    } else if (toState.data && toState.data.adminReq && !$rootScope.userPayload.admin) {
+	      event.preventDefault();
+	      $state.transitionTo('home');
+	    } else {
+	      $rootScope.root.waiting = true;
+	    }
+	  });
+	  $rootScope.$on('$stateChangeSuccess', function () {
+	    $rootScope.root.waiting = false;
+	  });
+	});
 	
 	_angular2.default.element(document).ready(function () {
 	  _angular2.default.bootstrap(document, ['rcApp']);
@@ -113,12 +151,362 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(2);
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(2);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./colorpicker.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./colorpicker.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*https://github.com/myplanet/angular-color-picker/blob/master/angular-color-picker.css*/\n\n.angular-color-picker {\n    background: #fff;\n    border: 1px solid #ddd;\n    padding: 20px;\n    display: inline-block;\n}\n.angular-color-picker > ._variations {\n    border: 1px solid #808080;\n    width: 200px;\n    height: 200px;\n    float: left;\n    transition: background-color 250ms;\n}\n.angular-color-picker > ._variations > ._whites {\n    width: 200px;\n    height: 200px;\n    background: -webkit-linear-gradient(left, #fff 0, transparent 100%);\n    background: -moz-linear-gradient(left, #fff 0, transparent 100%);\n    background: -ms-linear-gradient(left, #fff 0, transparent 100%);\n    background: linear-gradient(to right, #fff 0, transparent 100%);\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#00ffffff', GradientType='1')\";\n}\n.angular-color-picker > ._variations > ._whites > ._blacks {\n    width: 200px;\n    height: 200px;\n    background: -webkit-linear-gradient(top, transparent 0, #000 100%);\n    background: -moz-linear-gradient(top, transparent 0, #000 100%);\n    background: -ms-linear-gradient(top, transparent 0, #000 100%);\n    background: linear-gradient(to bottom, transparent 0, #000 100%);\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#ff000000')\";\n    position: relative;\n}\n.angular-color-picker > ._variations > ._whites > ._blacks > ._cursor {\n    position: absolute;\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border: 1px solid #fff;\n    border-right-color: #000;\n    border-left-color: #000;\n    border-radius: 5px;\n}\n.angular-color-picker > ._variations > ._whites > ._blacks > ._mouse-trap {\n    position: relative;\n    z-index: 1;\n    width: 200px;\n    height: 200px;\n}\n.angular-color-picker > ._hues {\n    border: 1px solid #808080;\n    position: relative;\n    margin-left: 210px;\n    height: 200px;\n    width: 30px;\n    background: -webkit-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);\n    background: -moz-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);\n    background: -ms-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);\n    background: linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);\n}\n.angular-color-picker > ._hues > ._cursor {\n    position: absolute;\n    left: -7px;\n    width: 33px;\n    height: 0;\n    border: 5px solid transparent;\n    border-left-color: #808080;\n    border-right-color: #808080;\n}\n.angular-color-picker > ._hues > ._mouse-trap {\n    position: absolute;\n    z-index: 1;\n    top: 0;\n    left: 0;\n    width: 30px;\n    height: 200px;\n}\n/* Heavily based on: http://jsfiddle.net/bgrins/Whc6Z/ */\n.angular-color-picker > ._hues > ._ie-1 {\n    height: 17%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#ffff00')\";\n}\n.angular-color-picker > ._hues > ._ie-2 {\n    height: 16%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffff00', endColorstr='#00ff00')\";\n}\n.angular-color-picker > ._hues > ._ie-3 {\n    height: 17%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ff00', endColorstr='#00ffff')\";\n}\n.angular-color-picker > ._hues > ._ie-4 {\n    height: 17%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffff', endColorstr='#0000ff')\";\n}\n.angular-color-picker > ._hues > ._ie-5 {\n    height: 16%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#0000ff', endColorstr='#ff00ff')\";\n}\n.angular-color-picker > ._hues > ._ie-6 {\n    height: 17%;\n    filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff00ff', endColorstr='#ff0000')\";\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(6);
 	module.exports = angular;
 
 
 /***/ },
-/* 2 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
@@ -30551,7 +30939,7 @@
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 3 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/**
@@ -35095,15 +35483,15 @@
 	})(window, window.angular);
 
 /***/ },
-/* 4 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(5);
+	__webpack_require__(9);
 	module.exports = 'ngMessages';
 
 
 /***/ },
-/* 5 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -35796,7 +36184,1191 @@
 
 
 /***/ },
-/* 6 */
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(11);
+	module.exports = 'ngResource';
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	/**
+	 * @license AngularJS v1.5.0
+	 * (c) 2010-2016 Google, Inc. http://angularjs.org
+	 * License: MIT
+	 */
+	(function(window, angular, undefined) {'use strict';
+	
+	var $resourceMinErr = angular.$$minErr('$resource');
+	
+	// Helper functions and regex to lookup a dotted path on an object
+	// stopping at undefined/null.  The path must be composed of ASCII
+	// identifiers (just like $parse)
+	var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
+	
+	function isValidDottedPath(path) {
+	  return (path != null && path !== '' && path !== 'hasOwnProperty' &&
+	      MEMBER_NAME_REGEX.test('.' + path));
+	}
+	
+	function lookupDottedPath(obj, path) {
+	  if (!isValidDottedPath(path)) {
+	    throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
+	  }
+	  var keys = path.split('.');
+	  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
+	    var key = keys[i];
+	    obj = (obj !== null) ? obj[key] : undefined;
+	  }
+	  return obj;
+	}
+	
+	/**
+	 * Create a shallow copy of an object and clear other fields from the destination
+	 */
+	function shallowClearAndCopy(src, dst) {
+	  dst = dst || {};
+	
+	  angular.forEach(dst, function(value, key) {
+	    delete dst[key];
+	  });
+	
+	  for (var key in src) {
+	    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+	      dst[key] = src[key];
+	    }
+	  }
+	
+	  return dst;
+	}
+	
+	/**
+	 * @ngdoc module
+	 * @name ngResource
+	 * @description
+	 *
+	 * # ngResource
+	 *
+	 * The `ngResource` module provides interaction support with RESTful services
+	 * via the $resource service.
+	 *
+	 *
+	 * <div doc-module-components="ngResource"></div>
+	 *
+	 * See {@link ngResource.$resource `$resource`} for usage.
+	 */
+	
+	/**
+	 * @ngdoc service
+	 * @name $resource
+	 * @requires $http
+	 * @requires ng.$log
+	 * @requires $q
+	 * @requires ng.$timeout
+	 *
+	 * @description
+	 * A factory which creates a resource object that lets you interact with
+	 * [RESTful](http://en.wikipedia.org/wiki/Representational_State_Transfer) server-side data sources.
+	 *
+	 * The returned resource object has action methods which provide high-level behaviors without
+	 * the need to interact with the low level {@link ng.$http $http} service.
+	 *
+	 * Requires the {@link ngResource `ngResource`} module to be installed.
+	 *
+	 * By default, trailing slashes will be stripped from the calculated URLs,
+	 * which can pose problems with server backends that do not expect that
+	 * behavior.  This can be disabled by configuring the `$resourceProvider` like
+	 * this:
+	 *
+	 * ```js
+	     app.config(['$resourceProvider', function($resourceProvider) {
+	       // Don't strip trailing slashes from calculated URLs
+	       $resourceProvider.defaults.stripTrailingSlashes = false;
+	     }]);
+	 * ```
+	 *
+	 * @param {string} url A parameterized URL template with parameters prefixed by `:` as in
+	 *   `/user/:username`. If you are using a URL with a port number (e.g.
+	 *   `http://example.com:8080/api`), it will be respected.
+	 *
+	 *   If you are using a url with a suffix, just add the suffix, like this:
+	 *   `$resource('http://example.com/resource.json')` or `$resource('http://example.com/:id.json')`
+	 *   or even `$resource('http://example.com/resource/:resource_id.:format')`
+	 *   If the parameter before the suffix is empty, :resource_id in this case, then the `/.` will be
+	 *   collapsed down to a single `.`.  If you need this sequence to appear and not collapse then you
+	 *   can escape it with `/\.`.
+	 *
+	 * @param {Object=} paramDefaults Default values for `url` parameters. These can be overridden in
+	 *   `actions` methods. If a parameter value is a function, it will be executed every time
+	 *   when a param value needs to be obtained for a request (unless the param was overridden).
+	 *
+	 *   Each key value in the parameter object is first bound to url template if present and then any
+	 *   excess keys are appended to the url search query after the `?`.
+	 *
+	 *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in
+	 *   URL `/path/greet?salutation=Hello`.
+	 *
+	 *   If the parameter value is prefixed with `@` then the value for that parameter will be extracted
+	 *   from the corresponding property on the `data` object (provided when calling an action method).
+	 *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of
+	 *   `someParam` will be `data.someProp`.
+	 *
+	 * @param {Object.<Object>=} actions Hash with declaration of custom actions that should extend
+	 *   the default set of resource actions. The declaration should be created in the format of {@link
+	 *   ng.$http#usage $http.config}:
+	 *
+	 *       {action1: {method:?, params:?, isArray:?, headers:?, ...},
+	 *        action2: {method:?, params:?, isArray:?, headers:?, ...},
+	 *        ...}
+	 *
+	 *   Where:
+	 *
+	 *   - **`action`** – {string} – The name of action. This name becomes the name of the method on
+	 *     your resource object.
+	 *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
+	 *     `DELETE`, `JSONP`, etc).
+	 *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
+	 *     the parameter value is a function, it will be executed every time when a param value needs to
+	 *     be obtained for a request (unless the param was overridden).
+	 *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
+	 *     like for the resource-level urls.
+	 *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
+	 *     see `returns` section.
+	 *   - **`transformRequest`** –
+	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
+	 *     transform function or an array of such functions. The transform function takes the http
+	 *     request body and headers and returns its transformed (typically serialized) version.
+	 *     By default, transformRequest will contain one function that checks if the request data is
+	 *     an object and serializes to using `angular.toJson`. To prevent this behavior, set
+	 *     `transformRequest` to an empty array: `transformRequest: []`
+	 *   - **`transformResponse`** –
+	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
+	 *     transform function or an array of such functions. The transform function takes the http
+	 *     response body and headers and returns its transformed (typically deserialized) version.
+	 *     By default, transformResponse will contain one function that checks if the response looks
+	 *     like a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior,
+	 *     set `transformResponse` to an empty array: `transformResponse: []`
+	 *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
+	 *     GET request, otherwise if a cache instance built with
+	 *     {@link ng.$cacheFactory $cacheFactory}, this cache will be used for
+	 *     caching.
+	 *   - **`timeout`** – `{number}` – timeout in milliseconds.<br />
+	 *     **Note:** In contrast to {@link ng.$http#usage $http.config}, {@link ng.$q promises} are
+	 *     **not** supported in $resource, because the same value would be used for multiple requests.
+	 *     If you are looking for a way to cancel requests, you should use the `cancellable` option.
+	 *   - **`cancellable`** – `{boolean}` – if set to true, the request made by a "non-instance" call
+	 *     will be cancelled (if not already completed) by calling `$cancelRequest()` on the call's
+	 *     return value. Calling `$cancelRequest()` for a non-cancellable or an already
+	 *     completed/cancelled request will have no effect.<br />
+	 *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the
+	 *     XHR object. See
+	 *     [requests with credentials](https://developer.mozilla.org/en/http_access_control#section_5)
+	 *     for more information.
+	 *   - **`responseType`** - `{string}` - see
+	 *     [requestType](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType).
+	 *   - **`interceptor`** - `{Object=}` - The interceptor object has two optional methods -
+	 *     `response` and `responseError`. Both `response` and `responseError` interceptors get called
+	 *     with `http response` object. See {@link ng.$http $http interceptors}.
+	 *
+	 * @param {Object} options Hash with custom settings that should extend the
+	 *   default `$resourceProvider` behavior.  The supported options are:
+	 *
+	 *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing
+	 *   slashes from any calculated URL will be stripped. (Defaults to true.)
+	 *   - **`cancellable`** – {boolean} – If true, the request made by a "non-instance" call will be
+	 *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return value.
+	 *   This can be overwritten per action. (Defaults to false.)
+	 *
+	 * @returns {Object} A resource "class" object with methods for the default set of resource actions
+	 *   optionally extended with custom `actions`. The default set contains these actions:
+	 *   ```js
+	 *   { 'get':    {method:'GET'},
+	 *     'save':   {method:'POST'},
+	 *     'query':  {method:'GET', isArray:true},
+	 *     'remove': {method:'DELETE'},
+	 *     'delete': {method:'DELETE'} };
+	 *   ```
+	 *
+	 *   Calling these methods invoke an {@link ng.$http} with the specified http method,
+	 *   destination and parameters. When the data is returned from the server then the object is an
+	 *   instance of the resource class. The actions `save`, `remove` and `delete` are available on it
+	 *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create,
+	 *   read, update, delete) on server-side data like this:
+	 *   ```js
+	 *   var User = $resource('/user/:userId', {userId:'@id'});
+	 *   var user = User.get({userId:123}, function() {
+	 *     user.abc = true;
+	 *     user.$save();
+	 *   });
+	 *   ```
+	 *
+	 *   It is important to realize that invoking a $resource object method immediately returns an
+	 *   empty reference (object or array depending on `isArray`). Once the data is returned from the
+	 *   server the existing reference is populated with the actual data. This is a useful trick since
+	 *   usually the resource is assigned to a model which is then rendered by the view. Having an empty
+	 *   object results in no rendering, once the data arrives from the server then the object is
+	 *   populated with the data and the view automatically re-renders itself showing the new data. This
+	 *   means that in most cases one never has to write a callback function for the action methods.
+	 *
+	 *   The action methods on the class object or instance object can be invoked with the following
+	 *   parameters:
+	 *
+	 *   - HTTP GET "class" actions: `Resource.action([parameters], [success], [error])`
+	 *   - non-GET "class" actions: `Resource.action([parameters], postData, [success], [error])`
+	 *   - non-GET instance actions:  `instance.$action([parameters], [success], [error])`
+	 *
+	 *
+	 *   Success callback is called with (value, responseHeaders) arguments, where the value is
+	 *   the populated resource instance or collection object. The error callback is called
+	 *   with (httpResponse) argument.
+	 *
+	 *   Class actions return empty instance (with additional properties below).
+	 *   Instance actions return promise of the action.
+	 *
+	 *   The Resource instances and collections have these additional properties:
+	 *
+	 *   - `$promise`: the {@link ng.$q promise} of the original server interaction that created this
+	 *     instance or collection.
+	 *
+	 *     On success, the promise is resolved with the same resource instance or collection object,
+	 *     updated with data from server. This makes it easy to use in
+	 *     {@link ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view
+	 *     rendering until the resource(s) are loaded.
+	 *
+	 *     On failure, the promise is rejected with the {@link ng.$http http response} object, without
+	 *     the `resource` property.
+	 *
+	 *     If an interceptor object was provided, the promise will instead be resolved with the value
+	 *     returned by the interceptor.
+	 *
+	 *   - `$resolved`: `true` after first server interaction is completed (either with success or
+	 *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in
+	 *      data-binding.
+	 *
+	 *   The Resource instances and collections have these additional methods:
+	 *
+	 *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or
+	 *      collection, calling this method will abort the request.
+	 *
+	 * @example
+	 *
+	 * # Credit card resource
+	 *
+	 * ```js
+	     // Define CreditCard class
+	     var CreditCard = $resource('/user/:userId/card/:cardId',
+	      {userId:123, cardId:'@id'}, {
+	       charge: {method:'POST', params:{charge:true}}
+	      });
+	
+	     // We can retrieve a collection from the server
+	     var cards = CreditCard.query(function() {
+	       // GET: /user/123/card
+	       // server returns: [ {id:456, number:'1234', name:'Smith'} ];
+	
+	       var card = cards[0];
+	       // each item is an instance of CreditCard
+	       expect(card instanceof CreditCard).toEqual(true);
+	       card.name = "J. Smith";
+	       // non GET methods are mapped onto the instances
+	       card.$save();
+	       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+	       // server returns: {id:456, number:'1234', name: 'J. Smith'};
+	
+	       // our custom method is mapped as well.
+	       card.$charge({amount:9.99});
+	       // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
+	     });
+	
+	     // we can create an instance as well
+	     var newCard = new CreditCard({number:'0123'});
+	     newCard.name = "Mike Smith";
+	     newCard.$save();
+	     // POST: /user/123/card {number:'0123', name:'Mike Smith'}
+	     // server returns: {id:789, number:'0123', name: 'Mike Smith'};
+	     expect(newCard.id).toEqual(789);
+	 * ```
+	 *
+	 * The object returned from this function execution is a resource "class" which has "static" method
+	 * for each action in the definition.
+	 *
+	 * Calling these methods invoke `$http` on the `url` template with the given `method`, `params` and
+	 * `headers`.
+	 *
+	 * @example
+	 *
+	 * # User resource
+	 *
+	 * When the data is returned from the server then the object is an instance of the resource type and
+	 * all of the non-GET methods are available with `$` prefix. This allows you to easily support CRUD
+	 * operations (create, read, update, delete) on server-side data.
+	
+	   ```js
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123}, function(user) {
+	       user.abc = true;
+	       user.$save();
+	     });
+	   ```
+	 *
+	 * It's worth noting that the success callback for `get`, `query` and other methods gets passed
+	 * in the response that came from the server as well as $http header getter function, so one
+	 * could rewrite the above example and get access to http headers as:
+	 *
+	   ```js
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123}, function(user, getResponseHeaders){
+	       user.abc = true;
+	       user.$save(function(user, putResponseHeaders) {
+	         //user => saved user object
+	         //putResponseHeaders => $http header getter
+	       });
+	     });
+	   ```
+	 *
+	 * You can also access the raw `$http` promise via the `$promise` property on the object returned
+	 *
+	   ```
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123})
+	         .$promise.then(function(user) {
+	           $scope.user = user;
+	         });
+	   ```
+	 *
+	 * @example
+	 *
+	 * # Creating a custom 'PUT' request
+	 *
+	 * In this example we create a custom method on our resource to make a PUT request
+	 * ```js
+	 *    var app = angular.module('app', ['ngResource', 'ngRoute']);
+	 *
+	 *    // Some APIs expect a PUT request in the format URL/object/ID
+	 *    // Here we are creating an 'update' method
+	 *    app.factory('Notes', ['$resource', function($resource) {
+	 *    return $resource('/notes/:id', null,
+	 *        {
+	 *            'update': { method:'PUT' }
+	 *        });
+	 *    }]);
+	 *
+	 *    // In our controller we get the ID from the URL using ngRoute and $routeParams
+	 *    // We pass in $routeParams and our Notes factory along with $scope
+	 *    app.controller('NotesCtrl', ['$scope', '$routeParams', 'Notes',
+	                                      function($scope, $routeParams, Notes) {
+	 *    // First get a note object from the factory
+	 *    var note = Notes.get({ id:$routeParams.id });
+	 *    $id = note.id;
+	 *
+	 *    // Now call update passing in the ID first then the object you are updating
+	 *    Notes.update({ id:$id }, note);
+	 *
+	 *    // This will PUT /notes/ID with the note object in the request payload
+	 *    }]);
+	 * ```
+	 *
+	 * @example
+	 *
+	 * # Cancelling requests
+	 *
+	 * If an action's configuration specifies that it is cancellable, you can cancel the request related
+	 * to an instance or collection (as long as it is a result of a "non-instance" call):
+	 *
+	   ```js
+	     // ...defining the `Hotel` resource...
+	     var Hotel = $resource('/api/hotel/:id', {id: '@id'}, {
+	       // Let's make the `query()` method cancellable
+	       query: {method: 'get', isArray: true, cancellable: true}
+	     });
+	
+	     // ...somewhere in the PlanVacationController...
+	     ...
+	     this.onDestinationChanged = function onDestinationChanged(destination) {
+	       // We don't care about any pending request for hotels
+	       // in a different destination any more
+	       this.availableHotels.$cancelRequest();
+	
+	       // Let's query for hotels in '<destination>'
+	       // (calls: /api/hotel?location=<destination>)
+	       this.availableHotels = Hotel.query({location: destination});
+	     };
+	   ```
+	 *
+	 */
+	angular.module('ngResource', ['ng']).
+	  provider('$resource', function() {
+	    var PROTOCOL_AND_DOMAIN_REGEX = /^https?:\/\/[^\/]*/;
+	    var provider = this;
+	
+	    this.defaults = {
+	      // Strip slashes by default
+	      stripTrailingSlashes: true,
+	
+	      // Default actions configuration
+	      actions: {
+	        'get': {method: 'GET'},
+	        'save': {method: 'POST'},
+	        'query': {method: 'GET', isArray: true},
+	        'remove': {method: 'DELETE'},
+	        'delete': {method: 'DELETE'}
+	      }
+	    };
+	
+	    this.$get = ['$http', '$log', '$q', '$timeout', function($http, $log, $q, $timeout) {
+	
+	      var noop = angular.noop,
+	        forEach = angular.forEach,
+	        extend = angular.extend,
+	        copy = angular.copy,
+	        isFunction = angular.isFunction;
+	
+	      /**
+	       * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
+	       * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set
+	       * (pchar) allowed in path segments:
+	       *    segment       = *pchar
+	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+	       *    pct-encoded   = "%" HEXDIG HEXDIG
+	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+	       *                     / "*" / "+" / "," / ";" / "="
+	       */
+	      function encodeUriSegment(val) {
+	        return encodeUriQuery(val, true).
+	          replace(/%26/gi, '&').
+	          replace(/%3D/gi, '=').
+	          replace(/%2B/gi, '+');
+	      }
+	
+	
+	      /**
+	       * This method is intended for encoding *key* or *value* parts of query component. We need a
+	       * custom method because encodeURIComponent is too aggressive and encodes stuff that doesn't
+	       * have to be encoded per http://tools.ietf.org/html/rfc3986:
+	       *    query       = *( pchar / "/" / "?" )
+	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+	       *    pct-encoded   = "%" HEXDIG HEXDIG
+	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+	       *                     / "*" / "+" / "," / ";" / "="
+	       */
+	      function encodeUriQuery(val, pctEncodeSpaces) {
+	        return encodeURIComponent(val).
+	          replace(/%40/gi, '@').
+	          replace(/%3A/gi, ':').
+	          replace(/%24/g, '$').
+	          replace(/%2C/gi, ',').
+	          replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+	      }
+	
+	      function Route(template, defaults) {
+	        this.template = template;
+	        this.defaults = extend({}, provider.defaults, defaults);
+	        this.urlParams = {};
+	      }
+	
+	      Route.prototype = {
+	        setUrlParams: function(config, params, actionUrl) {
+	          var self = this,
+	            url = actionUrl || self.template,
+	            val,
+	            encodedVal,
+	            protocolAndDomain = '';
+	
+	          var urlParams = self.urlParams = {};
+	          forEach(url.split(/\W/), function(param) {
+	            if (param === 'hasOwnProperty') {
+	              throw $resourceMinErr('badname', "hasOwnProperty is not a valid parameter name.");
+	            }
+	            if (!(new RegExp("^\\d+$").test(param)) && param &&
+	              (new RegExp("(^|[^\\\\]):" + param + "(\\W|$)").test(url))) {
+	              urlParams[param] = {
+	                isQueryParamValue: (new RegExp("\\?.*=:" + param + "(?:\\W|$)")).test(url)
+	              };
+	            }
+	          });
+	          url = url.replace(/\\:/g, ':');
+	          url = url.replace(PROTOCOL_AND_DOMAIN_REGEX, function(match) {
+	            protocolAndDomain = match;
+	            return '';
+	          });
+	
+	          params = params || {};
+	          forEach(self.urlParams, function(paramInfo, urlParam) {
+	            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
+	            if (angular.isDefined(val) && val !== null) {
+	              if (paramInfo.isQueryParamValue) {
+	                encodedVal = encodeUriQuery(val, true);
+	              } else {
+	                encodedVal = encodeUriSegment(val);
+	              }
+	              url = url.replace(new RegExp(":" + urlParam + "(\\W|$)", "g"), function(match, p1) {
+	                return encodedVal + p1;
+	              });
+	            } else {
+	              url = url.replace(new RegExp("(\/?):" + urlParam + "(\\W|$)", "g"), function(match,
+	                  leadingSlashes, tail) {
+	                if (tail.charAt(0) == '/') {
+	                  return tail;
+	                } else {
+	                  return leadingSlashes + tail;
+	                }
+	              });
+	            }
+	          });
+	
+	          // strip trailing slashes and set the url (unless this behavior is specifically disabled)
+	          if (self.defaults.stripTrailingSlashes) {
+	            url = url.replace(/\/+$/, '') || '/';
+	          }
+	
+	          // then replace collapse `/.` if found in the last URL path segment before the query
+	          // E.g. `http://url.com/id./format?q=x` becomes `http://url.com/id.format?q=x`
+	          url = url.replace(/\/\.(?=\w+($|\?))/, '.');
+	          // replace escaped `/\.` with `/.`
+	          config.url = protocolAndDomain + url.replace(/\/\\\./, '/.');
+	
+	
+	          // set params - delegate param encoding to $http
+	          forEach(params, function(value, key) {
+	            if (!self.urlParams[key]) {
+	              config.params = config.params || {};
+	              config.params[key] = value;
+	            }
+	          });
+	        }
+	      };
+	
+	
+	      function resourceFactory(url, paramDefaults, actions, options) {
+	        var route = new Route(url, options);
+	
+	        actions = extend({}, provider.defaults.actions, actions);
+	
+	        function extractParams(data, actionParams) {
+	          var ids = {};
+	          actionParams = extend({}, paramDefaults, actionParams);
+	          forEach(actionParams, function(value, key) {
+	            if (isFunction(value)) { value = value(); }
+	            ids[key] = value && value.charAt && value.charAt(0) == '@' ?
+	              lookupDottedPath(data, value.substr(1)) : value;
+	          });
+	          return ids;
+	        }
+	
+	        function defaultResponseInterceptor(response) {
+	          return response.resource;
+	        }
+	
+	        function Resource(value) {
+	          shallowClearAndCopy(value || {}, this);
+	        }
+	
+	        Resource.prototype.toJSON = function() {
+	          var data = extend({}, this);
+	          delete data.$promise;
+	          delete data.$resolved;
+	          return data;
+	        };
+	
+	        forEach(actions, function(action, name) {
+	          var hasBody = /^(POST|PUT|PATCH)$/i.test(action.method);
+	          var numericTimeout = action.timeout;
+	          var cancellable = angular.isDefined(action.cancellable) ? action.cancellable :
+	              (options && angular.isDefined(options.cancellable)) ? options.cancellable :
+	              provider.defaults.cancellable;
+	
+	          if (numericTimeout && !angular.isNumber(numericTimeout)) {
+	            $log.debug('ngResource:\n' +
+	                       '  Only numeric values are allowed as `timeout`.\n' +
+	                       '  Promises are not supported in $resource, because the same value would ' +
+	                       'be used for multiple requests. If you are looking for a way to cancel ' +
+	                       'requests, you should use the `cancellable` option.');
+	            delete action.timeout;
+	            numericTimeout = null;
+	          }
+	
+	          Resource[name] = function(a1, a2, a3, a4) {
+	            var params = {}, data, success, error;
+	
+	            /* jshint -W086 */ /* (purposefully fall through case statements) */
+	            switch (arguments.length) {
+	              case 4:
+	                error = a4;
+	                success = a3;
+	              //fallthrough
+	              case 3:
+	              case 2:
+	                if (isFunction(a2)) {
+	                  if (isFunction(a1)) {
+	                    success = a1;
+	                    error = a2;
+	                    break;
+	                  }
+	
+	                  success = a2;
+	                  error = a3;
+	                  //fallthrough
+	                } else {
+	                  params = a1;
+	                  data = a2;
+	                  success = a3;
+	                  break;
+	                }
+	              case 1:
+	                if (isFunction(a1)) success = a1;
+	                else if (hasBody) data = a1;
+	                else params = a1;
+	                break;
+	              case 0: break;
+	              default:
+	                throw $resourceMinErr('badargs',
+	                  "Expected up to 4 arguments [params, data, success, error], got {0} arguments",
+	                  arguments.length);
+	            }
+	            /* jshint +W086 */ /* (purposefully fall through case statements) */
+	
+	            var isInstanceCall = this instanceof Resource;
+	            var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
+	            var httpConfig = {};
+	            var responseInterceptor = action.interceptor && action.interceptor.response ||
+	              defaultResponseInterceptor;
+	            var responseErrorInterceptor = action.interceptor && action.interceptor.responseError ||
+	              undefined;
+	            var timeoutDeferred;
+	            var numericTimeoutPromise;
+	
+	            forEach(action, function(value, key) {
+	              switch (key) {
+	                default:
+	                  httpConfig[key] = copy(value);
+	                  break;
+	                case 'params':
+	                case 'isArray':
+	                case 'interceptor':
+	                case 'cancellable':
+	                  break;
+	              }
+	            });
+	
+	            if (!isInstanceCall && cancellable) {
+	              timeoutDeferred = $q.defer();
+	              httpConfig.timeout = timeoutDeferred.promise;
+	
+	              if (numericTimeout) {
+	                numericTimeoutPromise = $timeout(timeoutDeferred.resolve, numericTimeout);
+	              }
+	            }
+	
+	            if (hasBody) httpConfig.data = data;
+	            route.setUrlParams(httpConfig,
+	              extend({}, extractParams(data, action.params || {}), params),
+	              action.url);
+	
+	            var promise = $http(httpConfig).then(function(response) {
+	              var data = response.data;
+	
+	              if (data) {
+	                // Need to convert action.isArray to boolean in case it is undefined
+	                // jshint -W018
+	                if (angular.isArray(data) !== (!!action.isArray)) {
+	                  throw $resourceMinErr('badcfg',
+	                      'Error in resource configuration for action `{0}`. Expected response to ' +
+	                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
+	                    angular.isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
+	                }
+	                // jshint +W018
+	                if (action.isArray) {
+	                  value.length = 0;
+	                  forEach(data, function(item) {
+	                    if (typeof item === "object") {
+	                      value.push(new Resource(item));
+	                    } else {
+	                      // Valid JSON values may be string literals, and these should not be converted
+	                      // into objects. These items will not have access to the Resource prototype
+	                      // methods, but unfortunately there
+	                      value.push(item);
+	                    }
+	                  });
+	                } else {
+	                  var promise = value.$promise;     // Save the promise
+	                  shallowClearAndCopy(data, value);
+	                  value.$promise = promise;         // Restore the promise
+	                }
+	              }
+	              response.resource = value;
+	
+	              return response;
+	            }, function(response) {
+	              (error || noop)(response);
+	              return $q.reject(response);
+	            });
+	
+	            promise.finally(function() {
+	              value.$resolved = true;
+	              if (!isInstanceCall && cancellable) {
+	                value.$cancelRequest = angular.noop;
+	                $timeout.cancel(numericTimeoutPromise);
+	                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = null;
+	              }
+	            });
+	
+	            promise = promise.then(
+	              function(response) {
+	                var value = responseInterceptor(response);
+	                (success || noop)(value, response.headers);
+	                return value;
+	              },
+	              responseErrorInterceptor);
+	
+	            if (!isInstanceCall) {
+	              // we are creating instance / collection
+	              // - set the initial promise
+	              // - return the instance / collection
+	              value.$promise = promise;
+	              value.$resolved = false;
+	              if (cancellable) value.$cancelRequest = timeoutDeferred.resolve;
+	
+	              return value;
+	            }
+	
+	            // instance call
+	            return promise;
+	          };
+	
+	
+	          Resource.prototype['$' + name] = function(params, success, error) {
+	            if (isFunction(params)) {
+	              error = success; success = params; params = {};
+	            }
+	            var result = Resource[name].call(this, params, this, success, error);
+	            return result.$promise || result;
+	          };
+	        });
+	
+	        Resource.bind = function(additionalParamDefaults) {
+	          return resourceFactory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
+	        };
+	
+	        return Resource;
+	      }
+	
+	      return resourceFactory;
+	    }];
+	  });
+	
+	
+	})(window, window.angular);
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(13);
+	module.exports = 'angular-jwt';
+	
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	(function() {
+	
+	
+	// Create all modules and define dependencies to make sure they exist
+	// and are loaded in the correct order to satisfy dependency injection
+	// before all nested files are concatenated by Grunt
+	
+	// Modules
+	angular.module('angular-jwt',
+	    [
+	        'angular-jwt.interceptor',
+	        'angular-jwt.jwt'
+	    ]);
+	
+	 angular.module('angular-jwt.interceptor', [])
+	  .provider('jwtInterceptor', function() {
+	
+	    this.urlParam = null;
+	    this.authHeader = 'Authorization';
+	    this.authPrefix = 'Bearer ';
+	    this.tokenGetter = function() {
+	      return null;
+	    }
+	
+	    var config = this;
+	
+	    this.$get = ["$q", "$injector", "$rootScope", function ($q, $injector, $rootScope) {
+	      return {
+	        request: function (request) {
+	          if (request.skipAuthorization) {
+	            return request;
+	          }
+	
+	          if (config.urlParam) {
+	            request.params = request.params || {};
+	            // Already has the token in the url itself
+	            if (request.params[config.urlParam]) {
+	              return request;
+	            }
+	          } else {
+	            request.headers = request.headers || {};
+	            // Already has an Authorization header
+	            if (request.headers[config.authHeader]) {
+	              return request;
+	            }
+	          }
+	
+	          var tokenPromise = $q.when($injector.invoke(config.tokenGetter, this, {
+	            config: request
+	          }));
+	
+	          return tokenPromise.then(function(token) {
+	            if (token) {
+	              if (config.urlParam) {
+	                request.params[config.urlParam] = token;
+	              } else {
+	                request.headers[config.authHeader] = config.authPrefix + token;
+	              }
+	            }
+	            return request;
+	          });
+	        },
+	        responseError: function (response) {
+	          // handle the case where the user is not authenticated
+	          if (response.status === 401) {
+	            $rootScope.$broadcast('unauthenticated', response);
+	          }
+	          return $q.reject(response);
+	        }
+	      };
+	    }];
+	  });
+	
+	 angular.module('angular-jwt.jwt', [])
+	  .service('jwtHelper', function() {
+	
+	    this.urlBase64Decode = function(str) {
+	      var output = str.replace(/-/g, '+').replace(/_/g, '/');
+	      switch (output.length % 4) {
+	        case 0: { break; }
+	        case 2: { output += '=='; break; }
+	        case 3: { output += '='; break; }
+	        default: {
+	          throw 'Illegal base64url string!';
+	        }
+	      }
+	      return decodeURIComponent(escape(window.atob(output))); //polifyll https://github.com/davidchambers/Base64.js
+	    }
+	
+	
+	    this.decodeToken = function(token) {
+	      var parts = token.split('.');
+	
+	      if (parts.length !== 3) {
+	        throw new Error('JWT must have 3 parts');
+	      }
+	
+	      var decoded = this.urlBase64Decode(parts[1]);
+	      if (!decoded) {
+	        throw new Error('Cannot decode the token');
+	      }
+	
+	      return JSON.parse(decoded);
+	    }
+	
+	    this.getTokenExpirationDate = function(token) {
+	      var decoded;
+	      decoded = this.decodeToken(token);
+	
+	      if(typeof decoded.exp === "undefined") {
+	        return null;
+	      }
+	
+	      var d = new Date(0); // The 0 here is the key, which sets the date to the epoch
+	      d.setUTCSeconds(decoded.exp);
+	
+	      return d;
+	    };
+	
+	    this.isTokenExpired = function(token, offsetSeconds) {
+	      var d = this.getTokenExpirationDate(token);
+	      offsetSeconds = offsetSeconds || 0;
+	      if (d === null) {
+	        return false;
+	      }
+	
+	      // Token expired?
+	      return !(d.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
+	    };
+	  });
+	
+	}());
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [ module, __webpack_require__(5) ], __WEBPACK_AMD_DEFINE_RESULT__ = function (module, angular) {
+	            module.exports = factory(angular);
+	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof module === 'object') {
+	        module.exports = factory(require('angular'));
+	    } else {
+	        if (!root.mp) {
+	            root.mp = {};
+	        }
+	
+	        root.mp.colorPicker = factory(root.angular);
+	    }
+	}(this, function (angular) {
+	    'use strict';
+	
+	    function hsvToHexRgb(h, s, v) {
+	        if (typeof h === 'object') {
+	            s = h.s;
+	            v = h.v;
+	            h = h.h;
+	        }
+	
+	        var i = Math.floor(h * 6),
+	            f = h * 6 - i,
+	            p = v * (1 - s),
+	            q = v * (1 - f * s),
+	            t = v * (1 - (1 - f) * s);
+	
+	        var r, g, b;
+	
+	        switch (i % 6) {
+	        case 0:
+	            r = v;
+	            g = t;
+	            b = p;
+	            break;
+	        case 1:
+	            r = q;
+	            g = v;
+	            b = p;
+	            break;
+	        case 2:
+	            r = p;
+	            g = v;
+	            b = t;
+	            break;
+	        case 3:
+	            r = p;
+	            g = q;
+	            b = v;
+	            break;
+	        case 4:
+	            r = t;
+	            g = p;
+	            b = v;
+	            break;
+	        case 5:
+	            r = v;
+	            g = p;
+	            b = q;
+	            break;
+	        }
+	
+	        r = Math.floor(r * 255) + 256;
+	        g = Math.floor(g * 255) + 256;
+	        b = Math.floor(b * 255) + 256;
+	
+	        return '#'
+	            + r.toString(16).slice(1)
+	            + g.toString(16).slice(1)
+	            + b.toString(16).slice(1);
+	    }
+	
+	    /**
+	     * Heavily based on:
+	     * http://stackoverflow.com/a/8023734/23501
+	     */
+	    function hexRgbToHsv(hexRgb) {
+	        var tokens = /^#(..)(..)(..)$/.exec(hexRgb);
+	
+	        if (tokens) {
+	            var rgb = tokens.slice(1).map(function (hex) {
+	                return parseInt(hex, 16) / 255; // Normalize to 1
+	            });
+	
+	            var r = rgb[0],
+	                g = rgb[1],
+	                b = rgb[2],
+	                h, s,
+	                v = Math.max(r, g, b),
+	                diff = v - Math.min(r, g, b),
+	                diffc = function (c) {
+	                    return (v - c) / 6 / diff + 1 / 2;
+	                };
+	
+	            if (diff === 0) {
+	                h = s = 0;
+	            } else {
+	                s = diff / v;
+	
+	                var rr = diffc(r),
+	                    gg = diffc(g),
+	                    bb = diffc(b);
+	
+	                if (r === v) {
+	                    h = bb - gg;
+	                } else if (g === v) {
+	                    h = (1 / 3) + rr - bb;
+	                } else if (b === v) {
+	                    h = (2 / 3) + gg - rr;
+	                }
+	
+	                if (h < 0) {
+	                    h += 1;
+	                } else if (h > 1) {
+	                    h -= 1;
+	                }
+	            }
+	
+	            return {
+	                h: h,
+	                s: s,
+	                v: v
+	            };
+	        }
+	    }
+	
+	    return angular.module('mp.colorPicker', []).directive('colorPicker', [ '$window', function ($window) {
+	        // Introduce custom elements for IE8
+	        $window.document.createElement('color-picker');
+	
+	        var tmpl = ''
+	            + '<div class="angular-color-picker">'
+	            + '    <div class="_variations" ng-style="{ backgroundColor: hueBackgroundColor }">'
+	            + '        <div class="_whites">'
+	            + '            <div class="_blacks">'
+	            + '                <div class="_cursor" ng-if="colorCursor" ng-style="{ left: colorCursor.x - 5 + \'px\', top: colorCursor.y - 5 + \'px\' }"></div>'
+	            + '                <div class="_mouse-trap" ng-mousedown="startDrag($event, \'color\')"></div>'
+	            + '            </div>'
+	            + '        </div>'
+	            + '    </div>'
+	            + ''
+	            + '    <div class="_hues">'
+	            + '        <div class="_ie-1"></div>'
+	            + '        <div class="_ie-2"></div>'
+	            + '        <div class="_ie-3"></div>'
+	            + '        <div class="_ie-4"></div>'
+	            + '        <div class="_ie-5"></div>'
+	            + '        <div class="_ie-6"></div>'
+	            + '        <div class="_cursor" ng-style="{ top: hueCursor - 5 + \'px\' }"></div>'
+	            + '        <div class="_mouse-trap" ng-mousedown="startDrag($event, \'hue\')"></div>'
+	            + '    </div>'
+	            + '</div>';
+	
+	        return {
+	            restrict: 'AE',
+	            template: tmpl,
+	            replace: true,
+	            require: '?ngModel',
+	            scope: {
+	            },
+	
+	            link: function ($scope, $element, $attributes, ngModel) {
+	                $scope.hsv = { h: 0, s: 0, v: 0 };
+	
+	                if (ngModel) {
+	                    ngModel.$render = function () {
+	                        if (/^#[0-9A-Fa-f]{6}$/.test(ngModel.$viewValue)) {
+	                            $scope.color = ngModel.$viewValue;
+	                            $scope.hsv = hexRgbToHsv($scope.color);
+	                            $scope.colorCursor = {
+	                                x: $scope.hsv.s * 200,
+	                                y: (1 - $scope.hsv.v) * 200
+	                            };
+	                        } else {
+	                            $scope.color = null;
+	                            $scope.hsv = { h: 0.5 };
+	                            $scope.colorCursor = null;
+	                        }
+	
+	                        $scope.hueBackgroundColor = hsvToHexRgb($scope.hsv.h, 1, 1);
+	                        $scope.hueCursor = $scope.hsv.h * 200;
+	                    };
+	                }
+	
+	                var dragSubject,
+	                    dragRect;
+	
+	                function doDrag(x, y) {
+	                    x = Math.max(Math.min(x, dragRect.width), 0);
+	                    y = Math.max(Math.min(y, dragRect.height), 0);
+	
+	                    if (dragSubject === 'hue') {
+	                        $scope.hueCursor = y;
+	
+	                        $scope.hsv.h = y / dragRect.height;
+	
+	                        $scope.hueBackgroundColor = hsvToHexRgb($scope.hsv.h, 1, 1);
+	                    } else {
+	                        $scope.colorCursor = {
+	                            x: x,
+	                            y: y
+	                        };
+	
+	                        $scope.hsv.s = x / dragRect.width;
+	                        $scope.hsv.v = 1 - y / dragRect.height;
+	                    }
+	
+	                    if (typeof $scope.hsv.s !== 'undefined') {
+	                        $scope.color = hsvToHexRgb($scope.hsv);
+	
+	                        if (ngModel) {
+	                            ngModel.$setViewValue($scope.color);
+	                        }
+	                    }
+	                }
+	
+	                function onMouseMove(evt) {
+	                    evt.preventDefault();
+	
+	                    $scope.$apply(function () {
+	                        doDrag(evt.clientX - dragRect.x, evt.clientY - dragRect.y);
+	                    });
+	                }
+	
+	                $scope.startDrag = function (evt, subject) {
+	                    var rect = evt.target.getBoundingClientRect();
+	
+	                    dragSubject = subject;
+	                    dragRect = {
+	                        x: rect.left,
+	                        y: rect.top,
+	                        width: rect.right - rect.left,
+	                        height: rect.bottom - rect.top
+	                    };
+	
+	                    doDrag(evt.offsetX || evt.layerX, evt.offsetY || evt.layerY);
+	
+	                    angular.element($window)
+	                        .on('mousemove', onMouseMove)
+	                        .one('mouseup', function () {
+	                            angular.element($window).off('mousemove', onMouseMove);
+	                        });
+	                };
+	            }
+	        };
+	    }]);
+	}));
+
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -36763,7 +38335,7 @@
 
 
 /***/ },
-/* 7 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36773,41 +38345,45 @@
 	});
 	
 	exports.default = function ($stateProvider) {
-	  $stateProvider.state('home', _home2.default).state('home.login', _logIn2.default).state('home.register', _register2.default).state('gallery', _gallery2.default).state('personalGallery', _personalGallery2.default).state('profile', _profile2.default).state('admin', _admin2.default);
+	  $stateProvider.state('home', _home2.default).state('gallery', _gallery2.default).state('gallery.category', _category2.default).state('personalGallery', _personalGallery2.default).state('color', _color2.default).state('color.svg', _svg2.default).state('profile', _profile2.default).state('admin', _admin2.default);
 	};
 	
-	var _home = __webpack_require__(8);
+	var _home = __webpack_require__(17);
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _logIn = __webpack_require__(10);
-
-	var _logIn2 = _interopRequireDefault(_logIn);
-
-	var _register = __webpack_require__(11);
-
-	var _register2 = _interopRequireDefault(_register);
-
-	var _gallery = __webpack_require__(12);
+	var _gallery = __webpack_require__(19);
 
 	var _gallery2 = _interopRequireDefault(_gallery);
 
-	var _personalGallery = __webpack_require__(14);
+	var _category = __webpack_require__(21);
+
+	var _category2 = _interopRequireDefault(_category);
+
+	var _personalGallery = __webpack_require__(25);
 
 	var _personalGallery2 = _interopRequireDefault(_personalGallery);
 
-	var _profile = __webpack_require__(16);
+	var _profile = __webpack_require__(27);
 
 	var _profile2 = _interopRequireDefault(_profile);
 
-	var _admin = __webpack_require__(18);
+	var _admin = __webpack_require__(29);
 
 	var _admin2 = _interopRequireDefault(_admin);
+
+	var _color = __webpack_require__(31);
+
+	var _color2 = _interopRequireDefault(_color);
+
+	var _svg = __webpack_require__(33);
+
+	var _svg2 = _interopRequireDefault(_svg);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 8 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36816,7 +38392,7 @@
 	  value: true
 	});
 	
-	var _home = __webpack_require__(9);
+	var _home = __webpack_require__(18);
 	
 	var _home2 = _interopRequireDefault(_home);
 	
@@ -36828,77 +38404,18 @@
 	    authReq: false
 	  },
 	  template: _home2.default,
-	  controller: ['$scope', '$auth', function ($scope, $auth) {
-	    $scope.user = {};
-	    $scope.user.authenticate = function (provider) {
-	      $auth.authenticate(provider).then(function (response) {
-	        console.log('you logged in');
-	      }).catch(function (error) {
-	        console.log(error);
-	      });
-	    };
-	    $scope.user.logIn = function () {
-	      console.log('you tried to log in');
-	    };
-	    $scope.user.register = function () {
-	      console.log('you tried to register');
-	    };
-	  }]
+	  controller: 'homeCtrl'
 	
 	};
 
 /***/ },
-/* 9 */
+/* 18 */
 /***/ function(module, exports) {
 
-	module.exports = "<h6> Welcome! This is the home page </h6>\n<button ui-sref='.login({})'> Log In </button>\n<button ui-sref='.register({})'> Register </button>\n<button ng-click='user.authenticate(\"facebook\")'> Sign In With Facebook </button>\n\n<div ui-view> </div>\n";
+	module.exports = "<h3 id='homeHeader'>Welcome!</h3>\n<button ng-if=\"!userPayload\" ng-click='user.logIn = true; user.register = false'> Log In </button>\n<button ng-if=\"!userPayload\" ng-click='user.register = true; user.logIn = false'> Register </button>\n<button ng-if=\"!userPayload\" ng-click='user.authenticate(\"facebook\")'> Sign In With Facebook </button>\n<button ng-if=\"userPayload\" ng-click='user.logOut()'>Log Out</button>\n\n<user-form ng-show='user.logIn && !userPayload' form-type=\"Log In\" user-action=logIn> </user-form>\n\n<user-form ng-show='user.register && !userPayload' form-type=\"Register\" user-action=register> </user-form>\n";
 
 /***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  url: '/login',
-	  data: {
-	    authReq: false
-	  },
-	  template: '<user-form form-type="Log In" user-action=logIn(user)> </user-form>',
-	  controller: ['$scope', function ($scope) {
-	    $scope.logIn = function (user) {
-	      console.log('you tried to log in');
-	    };
-	  }]
-	};
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  url: '/register',
-	  data: {
-	    authReq: false
-	  },
-	  template: '<user-form form-type="Register" user-action=register(user)> </user-form>',
-	  controller: ['$scope', function ($scope) {
-	    $scope.register = function (user) {
-	      console.log('you tried to register');
-	    };
-	  }]
-	};
-
-/***/ },
-/* 12 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36907,7 +38424,7 @@
 	  value: true
 	});
 	
-	var _gallery = __webpack_require__(13);
+	var _gallery = __webpack_require__(20);
 	
 	var _gallery2 = _interopRequireDefault(_gallery);
 	
@@ -36916,25 +38433,20 @@
 	exports.default = {
 	  url: '/gallery',
 	  data: {
-	    authReq: false
+	    authReq: true
 	  },
 	  template: _gallery2.default,
-	  controller: ['$scope', function ($scope) {
-	    $scope.click = function ($event) {
-	      $scope.clickedElement = angular.element($event.target);
-	      $scope.clickedElement.css('fill', 'white');
-	    };
-	  }]
+	  controller: 'galleryCtrl'
 	};
 
 /***/ },
-/* 13 */
+/* 20 */
 /***/ function(module, exports) {
 
-	module.exports = "<h6> This is the gallery page </h6>\n";
+	module.exports = "\n<div> Search By Category:\n  <select ng-model='gallery.category'>\n    <option ng-repeat='category in gallery.categories' value='{{category}}'>{{category}}</option>\n  </select>\n  <button ui-sref='.category({categoryName:gallery.category, page:\"1\"})'>Search</button>\n</div>\n\n<div ui-view></div>\n";
 
 /***/ },
-/* 14 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36943,7 +38455,98 @@
 	  value: true
 	});
 	
-	var _personalGallery = __webpack_require__(15);
+	var _category = __webpack_require__(22);
+	
+	var _category2 = _interopRequireDefault(_category);
+	
+	__webpack_require__(23);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  url: '/:categoryName?page',
+	  data: {
+	    authReq: true
+	  },
+	  template: _category2.default,
+	  resolve: {
+	    svg: function svg(Gallery, $sce, $stateParams, $timeout) {
+	      window.scrollTo(0, 0);
+	      var query = { sort: '-view' };
+	      if ($stateParams.categoryName !== 'Popular') {
+	        query.category = $stateParams.categoryName;
+	      }
+	      if ($stateParams.page) {
+	        query.page = $stateParams.page;
+	      }
+	      return Gallery.get(query).$promise.then(function (svg) {
+	        svg.images.forEach(function (object) {
+	          object.svg = $sce.trustAsHtml(object.svg);
+	        });
+	        return svg;
+	      });
+	    }
+	  },
+	  controller: 'categoryCtrl'
+	};
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	module.exports = "<h3> This is images page based on categories </h3>\n<div id='container'>\n  <div class='svgInfo' ng-repeat='image in svgImages' ui-sref='color.svg({svgId: image._id})'>\n    <div class='svgFile' ng-bind-html='image.svg'> </div>\n    <div>Title: {{image.title}} </div>\n  </div>\n</div>\n\n<div>See More\n  <ul>\n      <li ng-repeat=\"page in pages track by $index\">\n        <span ui-sref='{page:($index+1)}'>{{$index+1}}</span></li>\n  </ul>\n</div>\n";
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(24);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./category.scss", function() {
+				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./category.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#container {\n  max-width: 100%;\n  max-height: 100%;\n  margin: 5px auto;\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  flex-flow: row wrap;\n  margin: 20px; }\n\n.svgFile {\n  width: 100px;\n  max-width: 100%;\n  max-height: 100px;\n  border: solid 1px black;\n  margin: 0 10px; }\n\n.svgInfo {\n  width: 100px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-flow: column;\n  margin: 5px 20px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _personalGallery = __webpack_require__(26);
 	
 	var _personalGallery2 = _interopRequireDefault(_personalGallery);
 	
@@ -36952,20 +38555,30 @@
 	exports.default = {
 	  url: '/personal-gallery',
 	  data: {
-	    auth: true
+	    authReq: true
 	  },
 	  template: _personalGallery2.default,
-	  controller: ['$scope', function ($scope) {}]
+	  resolve: {
+	    loadPersonal: function loadPersonal(SVG, $sce) {
+	      return SVG.query().$promise.then(function (images) {
+	        images.forEach(function (obj) {
+	          obj.svg = $sce.trustAsHtml(obj.svg);
+	        });
+	        return images;
+	      });
+	    }
+	  },
+	  controller: 'personalGalleryCtrl'
 	};
 
 /***/ },
-/* 15 */
+/* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<h6> This is the personal gallery page </h6>\n";
+	module.exports = "<h3> This is images page based on categories </h3>\n<h4> You are currently signed in as {{personal.user.displayName}} </h4>\n<div id='container'>\n  <div class='svgInfo' ng-repeat='image in personal.svgImages' ui-sref='color.svg({svgId:image.original._id, personal:image._id})'>\n    <div class='svgFile' ng-bind-html='image.svg'></div>\n    <div>Title: {{image.original.title}}</div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 16 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36974,7 +38587,7 @@
 	  value: true
 	});
 	
-	var _profile = __webpack_require__(17);
+	var _profile = __webpack_require__(28);
 	
 	var _profile2 = _interopRequireDefault(_profile);
 	
@@ -36990,13 +38603,13 @@
 	};
 
 /***/ },
-/* 17 */
+/* 28 */
 /***/ function(module, exports) {
 
-	module.exports = "<h6> This is the profile page </h6>\n";
+	module.exports = "<h3> This is the profile page </h3>\n";
 
 /***/ },
-/* 18 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37005,7 +38618,7 @@
 	  value: true
 	});
 	
-	var _admin = __webpack_require__(19);
+	var _admin = __webpack_require__(30);
 	
 	var _admin2 = _interopRequireDefault(_admin);
 	
@@ -37014,33 +38627,21 @@
 	exports.default = {
 	  url: '/admin',
 	  data: {
-	    authReq: true
+	    authReq: true,
+	    adminReq: true
 	  },
 	  template: _admin2.default,
-	  controller: ['$scope', '$sce', function ($scope, $sce) {
-	    $scope.image = {};
-	    $scope.color = 'white';
-	    $scope.image.submit = function (image) {
-	      $scope.actualImage = $sce.trustAsHtml(image.svg);
-	    };
-	    $scope.assignColor = function (color) {
-	      $scope.color = color;
-	    };
-	    $scope.image.color = function ($event) {
-	      $scope.clickedElement = angular.element($event.target);
-	      $scope.clickedElement.css('fill', $scope.color);
-	    };
-	  }]
+	  controller: 'adminCtrl'
 	};
 
 /***/ },
-/* 19 */
+/* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<form >\n  <h3>Add SVG File </h3>\n    <div>\n      <label for=\"name\">Name:  </label>\n      <input type=\"text\" ng-model=\"image.name\" placeholder=\"Image Name\">\n    </div>\n    <div>\n      <label for=\"category\">Category: </label>\n      <input type=\"text\" ng-model=\"image.category\" placeholder=\"Category\">\n    </div>\n    <div>\n      <label for=\"svg file\">Svg content</label>\n      <textarea ng-model=\"image.svg\" rows=\"10\" cols=\"80\"> </textarea>\n    </div>\n  <button type=\"submit\" ng-click='image.submit(image)'>Submit</button>\n</form>\n<br>\n\n<div>\n  <div style='width: 25px; height: 25px; background-color: red; display: inline-block;' ng-click='assignColor(\"red\")'> </div>\n  <div style='width: 25px; height: 25px; background-color: blue; display: inline-block;' ng-click='assignColor(\"blue\")'> </div>\n  <div style='width: 25px; height: 25px; background-color: green; display: inline-block;' ng-click='assignColor(\"green\")'> </div>\n  <div style='width: 25px; height: 25px; background-color: purple; display: inline-block;' ng-click='assignColor(\"purple\")'> </div>\n  <div style='width: 25px; height: 25px; background-color: black; display: inline-block;' ng-click='assignColor(\"black\")'> </div>\n  <div style='width: 25px; height: 25px; background-color: pink; display: inline-block;' ng-click='assignColor(\"pink\")'> </div>\n</div>\n<div ng-click='image.color($event)'>\n  <div ng-bind-html='actualImage'> </div>\n</div>\n";
+	module.exports = "\n<form >\n  <h3>Add SVG File </h3>\n    <div>\n      <label for=\"name\">Name:  </label>\n      <input type=\"text\" ng-model=\"image.title\" placeholder=\"Image Name\">\n    </div>\n    <div>\n      Category:\n      <select ng-model='image.category'>\n        <option ng-repeat='category in image.categories' value='{{category}}'>{{category}}</option>\n      </select>\n    </div>\n    <div>\n      <label for=\"svg file\">Svg content</label>\n      <textarea ng-model=\"image.svg\" rows=\"10\" cols=\"80\"> </textarea>\n    </div>\n  <button type=\"submit\" ng-click='image.submit(image)'>Submit</button>\n  <div ng-if=\"success\">Added SVG image</div>\n</form>\n";
 
 /***/ },
-/* 20 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37049,21 +38650,308 @@
 	  value: true
 	});
 	
-	var _mainHeader = __webpack_require__(21);
+	var _color = __webpack_require__(32);
+	
+	var _color2 = _interopRequireDefault(_color);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  url: '/color',
+	  data: {
+	    authReq: true
+	  },
+	  template: _color2.default
+	};
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ui-view></div>\n";
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _svg = __webpack_require__(34);
+	
+	var _svg2 = _interopRequireDefault(_svg);
+	
+	__webpack_require__(35);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  url: '/:svgId?personal',
+	  template: _svg2.default,
+	  resolve: {
+	    loadPersonal: function loadPersonal($stateParams, SVG, $sce) {
+	      if ($stateParams.personal) {
+	        return SVG.get({ image_id: $stateParams.personal }).$promise.then(function (image) {
+	          image.svg = $sce.trustAsHtml(image.svg);
+	          return image;
+	        });
+	      } else return undefined;
+	    },
+	    loadOriginal: function loadOriginal($stateParams, Gallery, $sce) {
+	      return Gallery.get({ image_id: $stateParams.svgId }).$promise.then(function (image) {
+	        image.svg = $sce.trustAsHtml(image.svg);
+	        return image;
+	      });
+	    }
+	  },
+	  controller: 'svgCtrl'
+	};
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	module.exports = "<div id='controls'>\n  <h5>Image Name: {{svg.name}} </h5>\n  <div ng-show='added'>\n    <button ng-click='svg.reset()'> Reset To Blank </button>\n    <button ng-click='svg.lastSaved()'> Remove Changes </button>\n    <button ng-click='svg.save()'> Save </button>\n    <button ng-click='svg.delete()'>Delete</button>\n  </div>\n    <button ng-hide='added' ng-click=\"addToPersonal()\">Color</button>\n</div>\n\n<div ng-show=\"updated\">Updated!</div>\n<!-- <div ng-bind-html=\"svg.image\"></div> -->\n\n<div id='color'>\n  <div id='svgImage' ng-click='svg.color($event)' ng-bind-html='svg.image'></div>\n  <div ng-show='added'>\n    <color-picker ng-model=\"svg.chosenColor\"></color-picker>\n    <div id='colorPallette'> current color :\n      <span id='currentColor' style='background-color: {{svg.chosenColor}};'></span>\n    </div>\n  </div>\n</div>\n";
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(36);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./svg.scss", function() {
+				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./svg.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#color {\n  max-width: 100%;\n  max-height: 100%;\n  margin: 5px auto;\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  flex-flow: row wrap;\n  margin: 20px; }\n\n#controls {\n  margin: 0 auto;\n  text-align: center; }\n\n#svgImage {\n  width: 500px;\n  max-width: 100%;\n  max-height: 500px;\n  border: solid 2px black;\n  margin: 0 10px;\n  background-color: white; }\n\n#colorPallette {\n  text-align: center;\n  display: flex;\n  align-items: center;\n  margin: 10px; }\n\n#currentColor {\n  width: 25px;\n  height: 25px;\n  border: solid 1px black;\n  margin-left: 5px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _angular = __webpack_require__(5);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var _galleryFactory = __webpack_require__(38);
+	
+	var _galleryFactory2 = _interopRequireDefault(_galleryFactory);
+	
+	var _svgFactory = __webpack_require__(39);
+	
+	var _svgFactory2 = _interopRequireDefault(_svgFactory);
+	
+	var _userService = __webpack_require__(40);
+	
+	var _userService2 = _interopRequireDefault(_userService);
+	
+	var _adminFactory = __webpack_require__(41);
+	
+	var _adminFactory2 = _interopRequireDefault(_adminFactory);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var factories = _angular2.default.module('factories', []);
+	
+	(0, _galleryFactory2.default)(factories);
+	(0, _svgFactory2.default)(factories);
+	(0, _userService2.default)(factories);
+	(0, _adminFactory2.default)(factories);
+	
+	exports.default = factories.name;
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	
+	  ngModule.factory('Gallery', function ($resource) {
+	
+	    return $resource(("") + '/api/gallery/:image_id', {
+	      image_id: '@image_id'
+	    }, {
+	      update: { method: 'PATCH' }
+	    });
+	  });
+	};
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	
+	  ngModule.factory('SVG', function ($resource) {
+	
+	    return $resource(("") + '/api/personal/:image_id', {
+	      image_id: '@image_id'
+	    }, {
+	      update: { method: 'PATCH' }
+	    });
+	  });
+	};
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	
+	  ngModule.factory('UserService', function ($http, $window, $rootScope, jwtHelper) {
+	
+	    var service = {};
+	
+	    service.login = function (user) {
+	      return $http({
+	        url: ("") + '/auth/email/login',
+	        method: 'POST',
+	        data: user
+	      }).then(function (res) {
+	        return res.data;
+	      });
+	    };
+	
+	    service.signup = function (user) {
+	      return $http({
+	        url: ("") + '/auth/email/signup',
+	        method: 'POST',
+	        data: user
+	      }).then(function (res) {
+	        return res.data;
+	      });
+	    };
+	
+	    service.setUser = function (token) {
+	      token = token || $window.localStorage.getItem('satellizer_token');
+	      if (token) {
+	        $rootScope.userPayload = jwtHelper.decodeToken(token);
+	      }
+	    };
+	
+	    service.removeUser = function () {
+	      window.localStorage.removeItem('satellizer_token');
+	      $rootScope.userPayload = undefined;
+	    };
+	
+	    return service;
+	  });
+	};
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	
+	  ngModule.factory('AdminService', function ($rootScope, $window, jwtHelper) {
+	
+	    var service = {};
+	
+	    service.checkUser = function () {
+	      var token = $window.localStorage.getItem('satellizer_token');
+	      if (token) {
+	        var payload = jwtHelper.decodeToken(token);
+	        $rootScope.root.admin = payload.admin;
+	      } else {
+	        $rootScope.root.admin = false;
+	      }
+	    };
+	
+	    return service;
+	  });
+	};
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _mainHeader = __webpack_require__(43);
 	
 	var _mainHeader2 = _interopRequireDefault(_mainHeader);
 	
-	var _mainNav = __webpack_require__(23);
+	var _mainNav = __webpack_require__(47);
 	
 	var _mainNav2 = _interopRequireDefault(_mainNav);
 	
-	var _navLink = __webpack_require__(25);
+	var _navLink = __webpack_require__(51);
 	
 	var _navLink2 = _interopRequireDefault(_navLink);
 	
-	var _userForm = __webpack_require__(27);
+	var _userForm = __webpack_require__(53);
 	
 	var _userForm2 = _interopRequireDefault(_userForm);
+	
+	var _loader = __webpack_require__(55);
+	
+	var _loader2 = _interopRequireDefault(_loader);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -37073,11 +38961,12 @@
 	(0, _mainNav2.default)(directives);
 	(0, _navLink2.default)(directives);
 	(0, _userForm2.default)(directives);
+	(0, _loader2.default)(directives);
 	
 	exports.default = directives.name;
 
 /***/ },
-/* 21 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37100,52 +38989,145 @@
 		});
 	};
 	
-	var _mainHeader = __webpack_require__(22);
+	var _mainHeader = __webpack_require__(44);
 
 	var _mainHeader2 = _interopRequireDefault(_mainHeader);
+
+	__webpack_require__(45);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 22 */
+/* 44 */
 /***/ function(module, exports) {
 
-	module.exports = "<header>\n  <h1> {{mainTitle}} </h1>\n</header>\n";
+	module.exports = "<header class='main-header'>\n  <h1> {{mainTitle}} </h1>\n</header>\n";
 
 /***/ },
-/* 23 */
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(46);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-header.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-header.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".main-header {\n  display: flex;\n  justify-content: center; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
 	exports.default = function (ngModule) {
-		ngModule.directive('mainNav', function () {
-			return {
-				replace: true,
-				restrict: 'E',
-				template: _mainNav2.default
-			};
-		});
+	  ngModule.directive('mainNav', function () {
+	    return {
+	      replace: true,
+	      restrict: 'E',
+	      template: _mainNav2.default,
+	      controller: function mainNavCtr($scope, $state, UserService) {
+	
+	        UserService.setUser();
+	
+	        $scope.logout = function () {
+	          UserService.removeUser();
+	          $state.go('home');
+	        };
+	      }
+	    };
+	  });
 	};
 	
-	var _mainNav = __webpack_require__(24);
+	var _mainNav = __webpack_require__(48);
 
 	var _mainNav2 = _interopRequireDefault(_mainNav);
+
+	__webpack_require__(49);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 24 */
+/* 48 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav>\n  <ul>\n    <nav-link state='home' page-name='Home' />\n    <nav-link state='gallery' page-name='Gallery' />\n    <nav-link state='personalGallery' page-name='Personal Gallery' />\n    <nav-link state='profile' page-name='Profile' />\n    <nav-link state='admin' page-name='Admin' />\n  </ul>\n</nav>\n";
+	module.exports = "<nav class='main-nav'>\n  <ul>\n    <nav-link state='home' page-name='Home' />\n    <nav-link state='gallery.category({categoryName:\"Popular\"})' page-name='Gallery' />\n    <nav-link state='personalGallery' page-name='Personal Gallery' />\n    <nav-link state='profile' page-name='Profile' />\n    <nav-link state='admin' ng-show='userPayload.admin' page-name='Admin' />\n    <li ng-show=\"userPayload\" ng-click=\"logout()\">Logout</li>\n  </ul>\n</nav>\n";
 
 /***/ },
-/* 25 */
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(50);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-nav.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-nav.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".main-nav ul {\n  list-style: none;\n  display: flex;\n  justify-content: center;\n  flex-direction: row; }\n\n.main-nav li {\n  padding: 5px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37168,20 +39150,20 @@
 		});
 	};
 	
-	var _navLink = __webpack_require__(26);
+	var _navLink = __webpack_require__(52);
 
 	var _navLink2 = _interopRequireDefault(_navLink);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 26 */
+/* 52 */
 /***/ function(module, exports) {
 
 	module.exports = "<li> <a ui-sref={{state}}>{{pageName}}</a> </li>\n";
 
 /***/ },
-/* 27 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37202,25 +39184,335 @@
 				},
 				controller: ['$scope', function ($scope) {
 					$scope.userInfo = {};
-					$scope.userInfo.submit = function (user) {
-						$scope.userAction(user);
+					$scope.signin = function () {
+						$scope.userAction()($scope.userInfo);
+						$scope.userInfo = {};
 					};
 				}]
 			};
 		});
 	};
 	
-	var _userForm = __webpack_require__(28);
+	var _userForm = __webpack_require__(54);
 
 	var _userForm2 = _interopRequireDefault(_userForm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 28 */
+/* 54 */
 /***/ function(module, exports) {
 
-	module.exports = "<form >\n  <h3>{{formType}}</h3>\n    <div>\n      <label for=\"email\">Email: </label>\n      <input type=\"text\" ng-model=\"userInfo.email\" placeholder=\"Email\">\n    </div>\n    <div>\n      <label for=\"password\">Password</label>\n      <input type=\"password\" ng-model=\"userInfo.password\" placeholder=\"Password\">\n    </div>\n  <button type=\"submit\" ng-click=userInfo.submit(user)>Submit</button>\n</form>\n";
+	module.exports = "<form >\n  <h3>{{formType}}</h3>\n    <div>\n      <label for=\"email\">Email: </label>\n      <input type=\"text\" ng-model=\"userInfo.email\" placeholder=\"Email\">\n    </div>\n    <br>\n    <div>\n      <label for=\"password\">Password: </label>\n      <input type=\"password\" ng-model=\"userInfo.password\" placeholder=\"Password\">\n    </div>\n    <br>\n  <button type=\"submit\" ng-click=signin()>Submit</button>\n</form>\n";
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	exports.default = function (ngModule) {
+		ngModule.directive('loader', function () {
+			return {
+				replace: true,
+				restrict: 'E',
+				template: _loader2.default,
+				scope: {},
+				controller: ['$scope', function ($scope) {
+					$scope.loader = 'Wait...';
+				}]
+			};
+		});
+	};
+	
+	var _loader = __webpack_require__(56);
+
+	var _loader2 = _interopRequireDefault(_loader);
+
+	__webpack_require__(57);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	module.exports = "<div id='loader'>\n  <!-- https://github.com/oskargustafsson/CSS-spinners -->\n  <div class=\"spinner colorwheel\" id=\"colorwheel\">\n    <div class=\"centerpiece\"></div>\n  </div>\n</div>\n";
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(58);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./loader.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./loader.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#loader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n/*https://github.com/oskargustafsson/CSS-spinners/blob/gh-pages/style.css */\n/* GENERAL */\n@-webkit-keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@-webkit-keyframes rotate {\n  from {\n    -webkit-transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@keyframes rotate {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(360deg); } }\n\n/* COLOR WHEEL */\n.spinner.colorwheel {\n  position: relative;\n  display: inline-block;\n  width: 4em;\n  height: 4em;\n  overflow: hidden;\n  border-radius: 100%;\n  z-index: 0; }\n\n.spinner.colorwheel::before,\n.spinner.colorwheel::after {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.spinner.colorwheel::before {\n  background: linear-gradient(to right, green, yellow);\n  -webkit-animation: rotate 2.5s linear infinite;\n  animation: rotate 2.5s linear infinite; }\n\n.spinner.colorwheel::after {\n  background: linear-gradient(to bottom, red, blue);\n  -webkit-animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite;\n  animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite; }\n\n.spinner .centerpiece {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  border-radius: 100%;\n  box-sizing: border-box;\n  border-left: 0.5em solid transparent;\n  border-right: 0.5em solid transparent;\n  border-bottom: 0.5em solid rgba(255, 255, 255, 0.3);\n  border-top: 0.5em solid rgba(255, 255, 255, 0.3);\n  -webkit-animation: rotate 0.8s linear infinite;\n  animation: rotate 0.8s linear infinite; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _angular = __webpack_require__(5);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var _adminCtrl = __webpack_require__(60);
+	
+	var _adminCtrl2 = _interopRequireDefault(_adminCtrl);
+	
+	var _svgCtrl = __webpack_require__(61);
+	
+	var _svgCtrl2 = _interopRequireDefault(_svgCtrl);
+	
+	var _galleryCtrl = __webpack_require__(62);
+	
+	var _galleryCtrl2 = _interopRequireDefault(_galleryCtrl);
+	
+	var _categoryCtrl = __webpack_require__(63);
+	
+	var _categoryCtrl2 = _interopRequireDefault(_categoryCtrl);
+	
+	var _homeCtrl = __webpack_require__(64);
+	
+	var _homeCtrl2 = _interopRequireDefault(_homeCtrl);
+	
+	var _personalGalleryCtrl = __webpack_require__(65);
+	
+	var _personalGalleryCtrl2 = _interopRequireDefault(_personalGalleryCtrl);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var stateCtrls = _angular2.default.module('statecontrollers', []);
+	
+	(0, _adminCtrl2.default)(stateCtrls);
+	(0, _galleryCtrl2.default)(stateCtrls);
+	(0, _svgCtrl2.default)(stateCtrls);
+	(0, _categoryCtrl2.default)(stateCtrls);
+	(0, _homeCtrl2.default)(stateCtrls);
+	(0, _personalGalleryCtrl2.default)(stateCtrls);
+	
+	exports.default = stateCtrls.name;
+
+/***/ },
+/* 60 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('adminCtrl', ['$scope', 'Gallery', function ($scope, Gallery) {
+	    $scope.image = {};
+	    $scope.image.categories = ['Animal', 'Abstract', 'Floral'];
+	    $scope.image.submit = function (image) {
+	      Gallery.save(image).$promise.then(function (res) {
+	        $scope.success = true;
+	      });
+	    };
+	  }]);
+	};
+
+/***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('svgCtrl', function ($scope, $sce, $state, $stateParams, loadPersonal, loadOriginal, SVG, Gallery) {
+	    var originalId = $stateParams.svgId;
+	    var personalId = $stateParams.personal;
+	    $scope.added = false;
+	    if (personalId) {
+	      $scope.added = true;
+	    }
+	    $scope.svg = {};
+	    $scope.svg.name = loadOriginal.title;
+	    $scope.svg.image = loadPersonal ? loadPersonal.svg : loadOriginal.svg;
+	
+	    $scope.addToPersonal = function () {
+	      SVG.save({}, { original: originalId }).$promise.then(function (savedImg) {
+	        $state.go('color.svg', { personal: savedImg._id }, { reload: false });
+	        $scope.added = true;
+	      });
+	    };
+	    $scope.svg.color = function ($event) {
+	      $event.target.style.fill = $scope.svg.chosenColor;
+	      $event.target.style['fill-opacity'] = 1;
+	      $scope.svg.image = $sce.trustAsHtml(document.getElementById('svgImage').innerHTML);
+	    };
+	    $scope.svg.reset = function () {
+	      $scope.updated = false;
+	      Gallery.get({ image_id: originalId }).$promise.then(function (original) {
+	        return SVG.update({ image_id: personalId }, { svg: original.svg }).$promise;
+	      }).then(function (saved) {
+	        $scope.updated = true;
+	        $scope.svg.image = $sce.trustAsHtml(saved.svg);
+	      });
+	    };
+	    $scope.svg.save = function () {
+	      var current = document.getElementById('svgImage').innerHTML;
+	      $scope.updated = false;
+	      SVG.update({ image_id: personalId }, { svg: current }).$promise.then(function (saved) {
+	        $scope.svg.image = $sce.trustAsHtml(saved.svg);
+	        $scope.updated = true;
+	      });
+	    };
+	    $scope.svg.lastSaved = function () {
+	      SVG.get({ image_id: personalId }).$promise.then(function (image) {
+	        $scope.svg.image = $sce.trustAsHtml(image.svg);
+	      });
+	    };
+	    $scope.svg.delete = function () {
+	      SVG.delete({ image_id: personalId }).$promise.then(function () {
+	        $state.go('personalGallery');
+	      });
+	    };
+	  });
+	};
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('galleryCtrl', ['$scope', function ($scope) {
+	    $scope.gallery = {};
+	    $scope.gallery.categories = ['Popular', 'Animal', 'Abstract', 'Floral'];
+	    $scope.gallery.category = 'Popular';
+	  }]);
+	};
+
+/***/ },
+/* 63 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('categoryCtrl', ['$scope', 'svg', function ($scope, svg) {
+	    $scope.svgImages = svg.images;
+	    $scope.pages = new Array(Math.ceil(svg.count / 10));
+	  }]);
+	};
+
+/***/ },
+/* 64 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('homeCtrl', function ($scope, $auth, UserService) {
+	    $scope.user = {};
+	    $scope.user.authenticate = function (provider) {
+	      $auth.authenticate(provider).then(function (response) {
+	        UserService.setUser();
+	      }).catch(function (error) {
+	        console.log(error);
+	      });
+	    };
+	    $scope.user.logOut = function () {
+	      UserService.removeUser();
+	    };
+	    $scope.register = function (user) {
+	      UserService.signup(user).then(function (data) {
+	        UserService.setUser(data.token);
+	      });
+	    };
+	    $scope.logIn = function (user) {
+	      UserService.login(user).then(function (data) {
+	        UserService.setUser(data.token);
+	      });
+	    };
+	  });
+	};
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.controller('personalGalleryCtrl', function ($scope, loadPersonal, jwtHelper, $window) {
+	    $scope.personal = {};
+	
+	    var token = $window.localStorage.getItem('satellizer_token');
+	    if (token) {
+	      var payload = jwtHelper.decodeToken(token);
+	      $scope.personal.user = payload;
+	    }
+	
+	    $scope.personal.svgImages = loadPersonal;
+	  });
+	};
 
 /***/ }
 /******/ ]);
