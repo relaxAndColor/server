@@ -49,59 +49,59 @@
 	
 	__webpack_require__(1);
 	
-	var _angular = __webpack_require__(5);
+	__webpack_require__(5);
+	
+	__webpack_require__(7);
+	
+	var _angular = __webpack_require__(9);
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _angularUiRouter = __webpack_require__(7);
+	var _angularUiRouter = __webpack_require__(11);
 	
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 	
-	var _angularMessages = __webpack_require__(8);
+	var _angularMessages = __webpack_require__(12);
 	
 	var _angularMessages2 = _interopRequireDefault(_angularMessages);
 	
-	var _angularResource = __webpack_require__(10);
+	var _angularResource = __webpack_require__(14);
 	
 	var _angularResource2 = _interopRequireDefault(_angularResource);
 	
-	var _angularJwt = __webpack_require__(12);
+	var _angularJwt = __webpack_require__(16);
 	
 	var _angularJwt2 = _interopRequireDefault(_angularJwt);
 	
-	__webpack_require__(14);
+	__webpack_require__(18);
 	
-	var _satellizer = __webpack_require__(15);
+	var _satellizer = __webpack_require__(19);
 	
 	var _satellizer2 = _interopRequireDefault(_satellizer);
 	
-	var _stateProvider = __webpack_require__(16);
+	var _stateProvider = __webpack_require__(20);
 	
 	var _stateProvider2 = _interopRequireDefault(_stateProvider);
 	
-	var _factories = __webpack_require__(37);
+	var _factories = __webpack_require__(39);
 	
 	var _factories2 = _interopRequireDefault(_factories);
 	
-	var _directives = __webpack_require__(42);
+	var _directives = __webpack_require__(43);
 	
 	var _directives2 = _interopRequireDefault(_directives);
 	
-	var _stateControllers = __webpack_require__(59);
+	var _formValidations = __webpack_require__(54);
+	
+	var _formValidations2 = _interopRequireDefault(_formValidations);
+	
+	var _stateControllers = __webpack_require__(57);
 	
 	var _stateControllers2 = _interopRequireDefault(_stateControllers);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	/* Directives */
-	
-	
-	/* UI-Router State Provider Config */
-	
-	
-	var app = _angular2.default.module('rcApp', [_angularUiRouter2.default, _angularMessages2.default, _angularResource2.default, _angularJwt2.default, _stateControllers2.default, 'mp.colorPicker', _satellizer2.default, _directives2.default, _factories2.default]);
-	
-	/*State Controllers */
+	/*Validators */
 	
 	
 	/* Factories */
@@ -111,6 +111,17 @@
 	
 	
 	/* Vendors */
+	
+	
+	var app = _angular2.default.module('rcApp', [_angularUiRouter2.default, _angularMessages2.default, _angularResource2.default, _angularJwt2.default, _stateControllers2.default, 'mp.colorPicker', _satellizer2.default, _directives2.default, _factories2.default, _formValidations2.default]);
+	
+	/*State Controllers */
+	
+	
+	/* Directives */
+	
+	
+	/* UI-Router State Provider Config */
 	
 	
 	app.config(['$authProvider', function ($authProvider) {
@@ -130,12 +141,16 @@
 	  $rootScope.$on('$stateChangeStart', function (event, toState, toParms) {
 	    if (toState.data && toState.data.authReq && !$auth.isAuthenticated()) {
 	      event.preventDefault();
-	      $state.transitionTo('home');
+	      $state.transitionTo('home', {}, { reload: true });
+	      $rootScope.notAuthorizedError = true;
 	    } else if (toState.data && toState.data.adminReq && !$rootScope.userPayload.admin) {
 	      event.preventDefault();
-	      $state.transitionTo('home');
+	      $state.transitionTo('home', {}, { reload: true });
+	      $rootScope.notAdminError = true;
 	    } else {
 	      $rootScope.root.waiting = true;
+	      $rootScope.notAdminError = false;
+	      $rootScope.notAuthorizedError = false;
 	    }
 	  });
 	  $rootScope.$on('$stateChangeSuccess', function () {
@@ -501,12 +516,93 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(6);
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(6);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/postcss-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/postcss-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,300);", ""]);
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Indie+Flower);", ""]);
+	
+	// module
+	exports.push([module.id, "/*\n * -- PURE BUTTON STYLES --\n * I want my pure-button elements to look a little different\n */\n.pure-button {\n  background-color: #1f8dd6;\n  color: white;\n  padding: 0.5em 2em;\n  border-radius: 5px;\n  margin: 5px 5px; }\n\na.pure-button-primary {\n  background: white;\n  color: #1f8dd6;\n  border-radius: 5px;\n  font-size: 120%; }\n\n/* font-family: 'Open Sans', sans-serif */\n/*\n * -- PURE FORM STYLES --\n * Style the form inputs and labels\n */\n.pure-form label {\n  margin: 1em 0 0;\n  font-weight: bold;\n  font-size: 100%; }\n\n.pure-form input[type] {\n  border: 2px solid #ddd;\n  box-shadow: none;\n  font-size: 100%;\n  width: 100%;\n  margin-bottom: 1em; }\n\n/*\n * -- TABLET (AND UP) MEDIA QUERIES --\n * On tablets and other medium-sized devices, we want to customize some\n * of the mobile styles.\n */\n@media (min-width: 48em) {\n  /* We increase the body font size */\n  body {\n    font-size: 18px; }\n  /* We want to give the content area some more padding */\n  .content {\n    padding: 1em; }\n  /* We can align the menu header to the left, but float the\n    menu items to the right. */\n  .home-menu {\n    text-align: left; }\n  .home-menu ul {\n    float: right; }\n  /* We decrease the width of the .splash, since we have more width\n    to work with */\n  .splash {\n    width: 50%;\n    height: 50%; }\n  .splash-head {\n    font-size: 250%; }\n  /* We remove the border-separator assigned to .l-box-lrg */\n  .l-box-lrg {\n    border: none; } }\n\n/*\n * -- DESKTOP (AND UP) MEDIA QUERIES --\n * On desktops and other large devices, we want to over-ride some\n * of the mobile and tablet styles.\n */\n@media (min-width: 78em) {\n  /* We increase the header font size even more */\n  .splash-head {\n    font-size: 300%; } }\n\n* {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\nbody {\n  margin: 0 auto;\n  max-width: 940px;\n  line-height: 1.7em;\n  color: #332B40;\n  font-size: 16px;\n  font-family: 'Open Sans', sans-serif;\n  background: #FCFFF5; }\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nlabel {\n  color: #004C66; }\n\n.pure-img-responsive {\n  max-width: 100%;\n  height: auto; }\n\n.center {\n  text-align: center; }\n\n.clear-nav {\n  margin-top: 100px; }\n\n.l-box {\n  padding: 1em; }\n\n.l-box-lrg {\n  padding: 2em;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1); }\n\n.is-center {\n  text-align: center; }\n\n.cool-font {\n  font-family: \"Indie Flower\", cursive;\n  font-size: 1.2em;\n  font-weight: bolder; }\n\n.user-form h3 {\n  text-align: center; }\n\n.user-form form {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-direction: column; }\n\n.main-header {\n  color: black;\n  display: flex;\n  justify-content: center;\n  background-color: #89bdd3;\n  border: solid 2px black;\n  font-family: \"Indie Flower\", cursive; }\n\n.mainPageTitle {\n  display: flex;\n  align-items: center;\n  align-content: center;\n  flex-wrap: wrap;\n  justify-content: center; }\n\n#title_Color {\n  padding: 8px;\n  background-color: black;\n  border: 1px solid gray;\n  border-radius: 30%;\n  margin: 5px 12px;\n  padding: 2px 12px; }\n\n#title_C {\n  color: #00ff00; }\n\n#title_o1 {\n  color: #ff0000; }\n\n#title_l {\n  color: #80ffff; }\n\n#title_o2 {\n  color: #ffff00; }\n\n#title_r {\n  color: #ff8080; }\n\n.form-error {\n  font-weight: bold;\n  color: red; }\n\n.form-success {\n  font-weight: bold;\n  color: green; }\n\n.search-by-category {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  align-content: center; }\n\n.svgContainer {\n  max-width: 100%;\n  max-height: 100%;\n  margin: 5px auto;\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  flex-flow: row wrap;\n  margin: 20px; }\n\n.svgListImage {\n  width: 200px;\n  max-width: 100%;\n  max-height: 200px;\n  border: solid 1px black;\n  background-color: white;\n  margin: 0 10px; }\n\n.svgListInfo {\n  width: 200px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-flow: column;\n  margin: 5px 20px; }\n\n.seeMoreImages {\n  display: flex;\n  align-items: center;\n  list-style: none;\n  padding-bottom: 20px;\n  justify-content: center; }\n  .seeMoreImages li {\n    font-weight: bolder; }\n  .seeMoreImages li a {\n    display: inline-block;\n    margin: 0 5px; }\n\n#controls {\n  margin: 0 auto;\n  text-align: center; }\n\n#svgImage {\n  width: 400px;\n  max-width: 100%;\n  max-height: 500px;\n  border: solid 2px black;\n  margin: 0 10px;\n  background-color: white; }\n\n#colorPallette {\n  text-align: center;\n  display: flex;\n  align-items: center;\n  margin: 10px; }\n\n#currentColor {\n  width: 25px;\n  height: 25px;\n  border: solid 1px black;\n  margin-left: 5px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(8);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../css-loader/index.js!./pure-min.css", function() {
+				var newContent = require("!!./../../css-loader/index.js!./pure-min.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*!\nPure v0.6.0\nCopyright 2014 Yahoo! Inc. All rights reserved.\nLicensed under the BSD License.\nhttps://github.com/yahoo/pure/blob/master/LICENSE.md\n*/\n/*!\nnormalize.css v^3.0 | MIT License | git.io/normalize\nCopyright (c) Nicolas Gallagher and Jonathan Neal\n*/\n/*! normalize.css v3.0.2 | MIT License | git.io/normalize */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}.hidden,[hidden]{display:none!important}.pure-img{max-width:100%;height:auto;display:block}.pure-g{letter-spacing:-.31em;*letter-spacing:normal;*word-spacing:-.43em;text-rendering:optimizespeed;font-family:FreeSans,Arimo,\"Droid Sans\",Helvetica,Arial,sans-serif;display:-webkit-flex;-webkit-flex-flow:row wrap;display:-ms-flexbox;-ms-flex-flow:row wrap;-ms-align-content:flex-start;-webkit-align-content:flex-start;align-content:flex-start}.opera-only :-o-prefocus,.pure-g{word-spacing:-.43em}.pure-u{display:inline-block;*display:inline;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-g [class *=\"pure-u\"]{font-family:sans-serif}.pure-u-1,.pure-u-1-1,.pure-u-1-2,.pure-u-1-3,.pure-u-2-3,.pure-u-1-4,.pure-u-3-4,.pure-u-1-5,.pure-u-2-5,.pure-u-3-5,.pure-u-4-5,.pure-u-5-5,.pure-u-1-6,.pure-u-5-6,.pure-u-1-8,.pure-u-3-8,.pure-u-5-8,.pure-u-7-8,.pure-u-1-12,.pure-u-5-12,.pure-u-7-12,.pure-u-11-12,.pure-u-1-24,.pure-u-2-24,.pure-u-3-24,.pure-u-4-24,.pure-u-5-24,.pure-u-6-24,.pure-u-7-24,.pure-u-8-24,.pure-u-9-24,.pure-u-10-24,.pure-u-11-24,.pure-u-12-24,.pure-u-13-24,.pure-u-14-24,.pure-u-15-24,.pure-u-16-24,.pure-u-17-24,.pure-u-18-24,.pure-u-19-24,.pure-u-20-24,.pure-u-21-24,.pure-u-22-24,.pure-u-23-24,.pure-u-24-24{display:inline-block;*display:inline;zoom:1;letter-spacing:normal;word-spacing:normal;vertical-align:top;text-rendering:auto}.pure-u-1-24{width:4.1667%;*width:4.1357%}.pure-u-1-12,.pure-u-2-24{width:8.3333%;*width:8.3023%}.pure-u-1-8,.pure-u-3-24{width:12.5%;*width:12.469%}.pure-u-1-6,.pure-u-4-24{width:16.6667%;*width:16.6357%}.pure-u-1-5{width:20%;*width:19.969%}.pure-u-5-24{width:20.8333%;*width:20.8023%}.pure-u-1-4,.pure-u-6-24{width:25%;*width:24.969%}.pure-u-7-24{width:29.1667%;*width:29.1357%}.pure-u-1-3,.pure-u-8-24{width:33.3333%;*width:33.3023%}.pure-u-3-8,.pure-u-9-24{width:37.5%;*width:37.469%}.pure-u-2-5{width:40%;*width:39.969%}.pure-u-5-12,.pure-u-10-24{width:41.6667%;*width:41.6357%}.pure-u-11-24{width:45.8333%;*width:45.8023%}.pure-u-1-2,.pure-u-12-24{width:50%;*width:49.969%}.pure-u-13-24{width:54.1667%;*width:54.1357%}.pure-u-7-12,.pure-u-14-24{width:58.3333%;*width:58.3023%}.pure-u-3-5{width:60%;*width:59.969%}.pure-u-5-8,.pure-u-15-24{width:62.5%;*width:62.469%}.pure-u-2-3,.pure-u-16-24{width:66.6667%;*width:66.6357%}.pure-u-17-24{width:70.8333%;*width:70.8023%}.pure-u-3-4,.pure-u-18-24{width:75%;*width:74.969%}.pure-u-19-24{width:79.1667%;*width:79.1357%}.pure-u-4-5{width:80%;*width:79.969%}.pure-u-5-6,.pure-u-20-24{width:83.3333%;*width:83.3023%}.pure-u-7-8,.pure-u-21-24{width:87.5%;*width:87.469%}.pure-u-11-12,.pure-u-22-24{width:91.6667%;*width:91.6357%}.pure-u-23-24{width:95.8333%;*width:95.8023%}.pure-u-1,.pure-u-1-1,.pure-u-5-5,.pure-u-24-24{width:100%}.pure-button{display:inline-block;zoom:1;line-height:normal;white-space:nowrap;vertical-align:middle;text-align:center;cursor:pointer;-webkit-user-drag:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-button::-moz-focus-inner{padding:0;border:0}.pure-button{font-family:inherit;font-size:100%;padding:.5em 1em;color:#444;color:rgba(0,0,0,.8);border:1px solid #999;border:0 rgba(0,0,0,0);background-color:#E6E6E6;text-decoration:none;border-radius:2px}.pure-button-hover,.pure-button:hover,.pure-button:focus{filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);background-image:-webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(40%,rgba(0,0,0,.05)),to(rgba(0,0,0,.1)));background-image:-webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));background-image:-moz-linear-gradient(top,rgba(0,0,0,.05) 0,rgba(0,0,0,.1));background-image:-o-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));background-image:linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1))}.pure-button:focus{outline:0}.pure-button-active,.pure-button:active{box-shadow:0 0 0 1px rgba(0,0,0,.15) inset,0 0 6px rgba(0,0,0,.2) inset;border-color:#000\\9}.pure-button[disabled],.pure-button-disabled,.pure-button-disabled:hover,.pure-button-disabled:focus,.pure-button-disabled:active{border:0;background-image:none;filter:progid:DXImageTransform.Microsoft.gradient(enabled=false);filter:alpha(opacity=40);-khtml-opacity:.4;-moz-opacity:.4;opacity:.4;cursor:not-allowed;box-shadow:none}.pure-button-hidden{display:none}.pure-button::-moz-focus-inner{padding:0;border:0}.pure-button-primary,.pure-button-selected,a.pure-button-primary,a.pure-button-selected{background-color:#0078e7;color:#fff}.pure-form input[type=text],.pure-form input[type=password],.pure-form input[type=email],.pure-form input[type=url],.pure-form input[type=date],.pure-form input[type=month],.pure-form input[type=time],.pure-form input[type=datetime],.pure-form input[type=datetime-local],.pure-form input[type=week],.pure-form input[type=number],.pure-form input[type=search],.pure-form input[type=tel],.pure-form input[type=color],.pure-form select,.pure-form textarea{padding:.5em .6em;display:inline-block;border:1px solid #ccc;box-shadow:inset 0 1px 3px #ddd;border-radius:4px;vertical-align:middle;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-form input:not([type]){padding:.5em .6em;display:inline-block;border:1px solid #ccc;box-shadow:inset 0 1px 3px #ddd;border-radius:4px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-form input[type=color]{padding:.2em .5em}.pure-form input[type=text]:focus,.pure-form input[type=password]:focus,.pure-form input[type=email]:focus,.pure-form input[type=url]:focus,.pure-form input[type=date]:focus,.pure-form input[type=month]:focus,.pure-form input[type=time]:focus,.pure-form input[type=datetime]:focus,.pure-form input[type=datetime-local]:focus,.pure-form input[type=week]:focus,.pure-form input[type=number]:focus,.pure-form input[type=search]:focus,.pure-form input[type=tel]:focus,.pure-form input[type=color]:focus,.pure-form select:focus,.pure-form textarea:focus{outline:0;border-color:#129FEA}.pure-form input:not([type]):focus{outline:0;border-color:#129FEA}.pure-form input[type=file]:focus,.pure-form input[type=radio]:focus,.pure-form input[type=checkbox]:focus{outline:thin solid #129FEA;outline:1px auto #129FEA}.pure-form .pure-checkbox,.pure-form .pure-radio{margin:.5em 0;display:block}.pure-form input[type=text][disabled],.pure-form input[type=password][disabled],.pure-form input[type=email][disabled],.pure-form input[type=url][disabled],.pure-form input[type=date][disabled],.pure-form input[type=month][disabled],.pure-form input[type=time][disabled],.pure-form input[type=datetime][disabled],.pure-form input[type=datetime-local][disabled],.pure-form input[type=week][disabled],.pure-form input[type=number][disabled],.pure-form input[type=search][disabled],.pure-form input[type=tel][disabled],.pure-form input[type=color][disabled],.pure-form select[disabled],.pure-form textarea[disabled]{cursor:not-allowed;background-color:#eaeded;color:#cad2d3}.pure-form input:not([type])[disabled]{cursor:not-allowed;background-color:#eaeded;color:#cad2d3}.pure-form input[readonly],.pure-form select[readonly],.pure-form textarea[readonly]{background-color:#eee;color:#777;border-color:#ccc}.pure-form input:focus:invalid,.pure-form textarea:focus:invalid,.pure-form select:focus:invalid{color:#b94a48;border-color:#e9322d}.pure-form input[type=file]:focus:invalid:focus,.pure-form input[type=radio]:focus:invalid:focus,.pure-form input[type=checkbox]:focus:invalid:focus{outline-color:#e9322d}.pure-form select{height:2.25em;border:1px solid #ccc;background-color:#fff}.pure-form select[multiple]{height:auto}.pure-form label{margin:.5em 0 .2em}.pure-form fieldset{margin:0;padding:.35em 0 .75em;border:0}.pure-form legend{display:block;width:100%;padding:.3em 0;margin-bottom:.3em;color:#333;border-bottom:1px solid #e5e5e5}.pure-form-stacked input[type=text],.pure-form-stacked input[type=password],.pure-form-stacked input[type=email],.pure-form-stacked input[type=url],.pure-form-stacked input[type=date],.pure-form-stacked input[type=month],.pure-form-stacked input[type=time],.pure-form-stacked input[type=datetime],.pure-form-stacked input[type=datetime-local],.pure-form-stacked input[type=week],.pure-form-stacked input[type=number],.pure-form-stacked input[type=search],.pure-form-stacked input[type=tel],.pure-form-stacked input[type=color],.pure-form-stacked input[type=file],.pure-form-stacked select,.pure-form-stacked label,.pure-form-stacked textarea{display:block;margin:.25em 0}.pure-form-stacked input:not([type]){display:block;margin:.25em 0}.pure-form-aligned input,.pure-form-aligned textarea,.pure-form-aligned select,.pure-form-aligned .pure-help-inline,.pure-form-message-inline{display:inline-block;*display:inline;*zoom:1;vertical-align:middle}.pure-form-aligned textarea{vertical-align:top}.pure-form-aligned .pure-control-group{margin-bottom:.5em}.pure-form-aligned .pure-control-group label{text-align:right;display:inline-block;vertical-align:middle;width:10em;margin:0 1em 0 0}.pure-form-aligned .pure-controls{margin:1.5em 0 0 11em}.pure-form input.pure-input-rounded,.pure-form .pure-input-rounded{border-radius:2em;padding:.5em 1em}.pure-form .pure-group fieldset{margin-bottom:10px}.pure-form .pure-group input,.pure-form .pure-group textarea{display:block;padding:10px;margin:0 0 -1px;border-radius:0;position:relative;top:-1px}.pure-form .pure-group input:focus,.pure-form .pure-group textarea:focus{z-index:3}.pure-form .pure-group input:first-child,.pure-form .pure-group textarea:first-child{top:1px;border-radius:4px 4px 0 0;margin:0}.pure-form .pure-group input:first-child:last-child,.pure-form .pure-group textarea:first-child:last-child{top:1px;border-radius:4px;margin:0}.pure-form .pure-group input:last-child,.pure-form .pure-group textarea:last-child{top:-2px;border-radius:0 0 4px 4px;margin:0}.pure-form .pure-group button{margin:.35em 0}.pure-form .pure-input-1{width:100%}.pure-form .pure-input-2-3{width:66%}.pure-form .pure-input-1-2{width:50%}.pure-form .pure-input-1-3{width:33%}.pure-form .pure-input-1-4{width:25%}.pure-form .pure-help-inline,.pure-form-message-inline{display:inline-block;padding-left:.3em;color:#666;vertical-align:middle;font-size:.875em}.pure-form-message{display:block;color:#666;font-size:.875em}@media only screen and (max-width :480px){.pure-form button[type=submit]{margin:.7em 0 0}.pure-form input:not([type]),.pure-form input[type=text],.pure-form input[type=password],.pure-form input[type=email],.pure-form input[type=url],.pure-form input[type=date],.pure-form input[type=month],.pure-form input[type=time],.pure-form input[type=datetime],.pure-form input[type=datetime-local],.pure-form input[type=week],.pure-form input[type=number],.pure-form input[type=search],.pure-form input[type=tel],.pure-form input[type=color],.pure-form label{margin-bottom:.3em;display:block}.pure-group input:not([type]),.pure-group input[type=text],.pure-group input[type=password],.pure-group input[type=email],.pure-group input[type=url],.pure-group input[type=date],.pure-group input[type=month],.pure-group input[type=time],.pure-group input[type=datetime],.pure-group input[type=datetime-local],.pure-group input[type=week],.pure-group input[type=number],.pure-group input[type=search],.pure-group input[type=tel],.pure-group input[type=color]{margin-bottom:0}.pure-form-aligned .pure-control-group label{margin-bottom:.3em;text-align:left;display:block;width:100%}.pure-form-aligned .pure-controls{margin:1.5em 0 0}.pure-form .pure-help-inline,.pure-form-message-inline,.pure-form-message{display:block;font-size:.75em;padding:.2em 0 .8em}}.pure-menu{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.pure-menu-fixed{position:fixed;left:0;top:0;z-index:3}.pure-menu-list,.pure-menu-item{position:relative}.pure-menu-list{list-style:none;margin:0;padding:0}.pure-menu-item{padding:0;margin:0;height:100%}.pure-menu-link,.pure-menu-heading{display:block;text-decoration:none;white-space:nowrap}.pure-menu-horizontal{width:100%;white-space:nowrap}.pure-menu-horizontal .pure-menu-list{display:inline-block}.pure-menu-horizontal .pure-menu-item,.pure-menu-horizontal .pure-menu-heading,.pure-menu-horizontal .pure-menu-separator{display:inline-block;*display:inline;zoom:1;vertical-align:middle}.pure-menu-item .pure-menu-item{display:block}.pure-menu-children{display:none;position:absolute;left:100%;top:0;margin:0;padding:0;z-index:3}.pure-menu-horizontal .pure-menu-children{left:0;top:auto;width:inherit}.pure-menu-allow-hover:hover>.pure-menu-children,.pure-menu-active>.pure-menu-children{display:block;position:absolute}.pure-menu-has-children>.pure-menu-link:after{padding-left:.5em;content:\"\\25B8\";font-size:small}.pure-menu-horizontal .pure-menu-has-children>.pure-menu-link:after{content:\"\\25BE\"}.pure-menu-scrollable{overflow-y:scroll;overflow-x:hidden}.pure-menu-scrollable .pure-menu-list{display:block}.pure-menu-horizontal.pure-menu-scrollable .pure-menu-list{display:inline-block}.pure-menu-horizontal.pure-menu-scrollable{white-space:nowrap;overflow-y:hidden;overflow-x:auto;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;padding:.5em 0}.pure-menu-horizontal.pure-menu-scrollable::-webkit-scrollbar{display:none}.pure-menu-separator{background-color:#ccc;height:1px;margin:.3em 0}.pure-menu-horizontal .pure-menu-separator{width:1px;height:1.3em;margin:0 .3em}.pure-menu-heading{text-transform:uppercase;color:#565d64}.pure-menu-link{color:#777}.pure-menu-children{background-color:#fff}.pure-menu-link,.pure-menu-disabled,.pure-menu-heading{padding:.5em 1em}.pure-menu-disabled{opacity:.5}.pure-menu-disabled .pure-menu-link:hover{background-color:transparent}.pure-menu-active>.pure-menu-link,.pure-menu-link:hover,.pure-menu-link:focus{background-color:#eee}.pure-menu-selected .pure-menu-link,.pure-menu-selected .pure-menu-link:visited{color:#000}.pure-table{border-collapse:collapse;border-spacing:0;empty-cells:show;border:1px solid #cbcbcb}.pure-table caption{color:#000;font:italic 85%/1 arial,sans-serif;padding:1em 0;text-align:center}.pure-table td,.pure-table th{border-left:1px solid #cbcbcb;border-width:0 0 0 1px;font-size:inherit;margin:0;overflow:visible;padding:.5em 1em}.pure-table td:first-child,.pure-table th:first-child{border-left-width:0}.pure-table thead{background-color:#e0e0e0;color:#000;text-align:left;vertical-align:bottom}.pure-table td{background-color:transparent}.pure-table-odd td{background-color:#f2f2f2}.pure-table-striped tr:nth-child(2n-1) td{background-color:#f2f2f2}.pure-table-bordered td{border-bottom:1px solid #cbcbcb}.pure-table-bordered tbody>tr:last-child>td{border-bottom-width:0}.pure-table-horizontal td,.pure-table-horizontal th{border-width:0 0 1px;border-bottom:1px solid #cbcbcb}.pure-table-horizontal tbody>tr:last-child>td{border-bottom-width:0}", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(10);
 	module.exports = angular;
 
 
 /***/ },
-/* 6 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -30939,7 +31035,7 @@
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 7 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -35483,15 +35579,15 @@
 	})(window, window.angular);
 
 /***/ },
-/* 8 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(9);
+	__webpack_require__(13);
 	module.exports = 'ngMessages';
 
 
 /***/ },
-/* 9 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -36184,15 +36280,15 @@
 
 
 /***/ },
-/* 10 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(11);
+	__webpack_require__(15);
 	module.exports = 'ngResource';
 
 
 /***/ },
-/* 11 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -36966,16 +37062,16 @@
 
 
 /***/ },
-/* 12 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(13);
+	__webpack_require__(17);
 	module.exports = 'angular-jwt';
 	
 
 
 /***/ },
-/* 13 */
+/* 17 */
 /***/ function(module, exports) {
 
 	(function() {
@@ -37112,12 +37208,12 @@
 	}());
 
 /***/ },
-/* 14 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [ module, __webpack_require__(5) ], __WEBPACK_AMD_DEFINE_RESULT__ = function (module, angular) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [ module, __webpack_require__(9) ], __WEBPACK_AMD_DEFINE_RESULT__ = function (module, angular) {
 	            module.exports = factory(angular);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module === 'object') {
@@ -37368,7 +37464,7 @@
 
 
 /***/ },
-/* 15 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -38335,7 +38431,7 @@
 
 
 /***/ },
-/* 16 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38345,45 +38441,41 @@
 	});
 	
 	exports.default = function ($stateProvider) {
-	  $stateProvider.state('home', _home2.default).state('gallery', _gallery2.default).state('gallery.category', _category2.default).state('personalGallery', _personalGallery2.default).state('color', _color2.default).state('color.svg', _svg2.default).state('profile', _profile2.default).state('admin', _admin2.default);
+	  $stateProvider.state('home', _home2.default).state('gallery', _gallery2.default).state('gallery.category', _category2.default).state('personalGallery', _personalGallery2.default).state('color', _color2.default).state('color.svg', _svg2.default).state('admin', _admin2.default);
 	};
 	
-	var _home = __webpack_require__(17);
+	var _home = __webpack_require__(21);
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _gallery = __webpack_require__(19);
+	var _gallery = __webpack_require__(25);
 
 	var _gallery2 = _interopRequireDefault(_gallery);
 
-	var _category = __webpack_require__(21);
+	var _category = __webpack_require__(27);
 
 	var _category2 = _interopRequireDefault(_category);
 
-	var _personalGallery = __webpack_require__(25);
+	var _personalGallery = __webpack_require__(29);
 
 	var _personalGallery2 = _interopRequireDefault(_personalGallery);
 
-	var _profile = __webpack_require__(27);
-
-	var _profile2 = _interopRequireDefault(_profile);
-
-	var _admin = __webpack_require__(29);
+	var _admin = __webpack_require__(31);
 
 	var _admin2 = _interopRequireDefault(_admin);
 
-	var _color = __webpack_require__(31);
+	var _color = __webpack_require__(35);
 
 	var _color2 = _interopRequireDefault(_color);
 
-	var _svg = __webpack_require__(33);
+	var _svg = __webpack_require__(37);
 
 	var _svg2 = _interopRequireDefault(_svg);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 17 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38392,9 +38484,11 @@
 	  value: true
 	});
 	
-	var _home = __webpack_require__(18);
+	var _home = __webpack_require__(22);
 	
 	var _home2 = _interopRequireDefault(_home);
+	
+	__webpack_require__(23);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38405,17 +38499,56 @@
 	  },
 	  template: _home2.default,
 	  controller: 'homeCtrl'
-	
 	};
 
 /***/ },
-/* 18 */
+/* 22 */
 /***/ function(module, exports) {
 
-	module.exports = "<h3 id='homeHeader'>Welcome!</h3>\n<button ng-if=\"!userPayload\" ng-click='user.logIn = true; user.register = false'> Log In </button>\n<button ng-if=\"!userPayload\" ng-click='user.register = true; user.logIn = false'> Register </button>\n<button ng-if=\"!userPayload\" ng-click='user.authenticate(\"facebook\")'> Sign In With Facebook </button>\n<button ng-if=\"userPayload\" ng-click='user.logOut()'>Log Out</button>\n\n<user-form ng-show='user.logIn && !userPayload' form-type=\"Log In\" user-action=logIn> </user-form>\n\n<user-form ng-show='user.register && !userPayload' form-type=\"Register\" user-action=register> </user-form>\n";
+	module.exports = "<div class=\"splash-container\">\n    <div class=\"splash\">\n        <h1 class=\"splash-head\">Relax and Color!</h1>\n        <p class=\"splash-subhead\">\n            Welcome to our coloring app.\n        </p>\n        <p>\n            <a ui-sref=\"gallery.category({categoryName:'Popular'})\" class=\"pure-button pure-button-primary\">Browse</a>\n        </p>\n    </div>\n</div>\n\n<div class=\"content-wrapper\">\n  <div class=\"content\">\n    <h2 class=\"content-head is-center\">What we offer</h2>\n    <div class=\"pure-g\">\n\n      <div class=\"l-box-lrg pure-u-1 pure-u-md-3-5\">\n        <h4>Why a coloring app?</h4>\n        <p>\n            Sometimes people need to just relax and unwind. One way to do this that is all the rage right now are adult coloring books.\n            Coloring in complicated designs allows you to turn your brain off to the outside world and simply let your creative mind flow. That can be as soothing as forms of meditation.\n            It gives you the feeling of being able to act like a kid again and come up with an artistic, eye pleasing, colorful piece that only you yourself thought of.\n            It doesn't require much of a effort but in a world where time is money, some people just might not be able to find the time in their day to sit down and slowly fill in a page.\n        </p>\n\n        <h4>Our goals</h4>\n        <p>\n            This app is designed to make that time available for people who still want that relaxing feeling people get from working on coloring books for adults.\n            It is meant to bring the coloring book to your screen so you can color anytime or anywhere in a quick fashion but still get the satisfaction of creating a colorful\n            picture from a blank canvas. Instead of having to color in every dot and worry about going outside the lines (which I hate) you will be able to simply click on a\n            certain color and then click the area of the image where you want that color to be filled in.\n        </p>\n      </div>\n\n\n      <div class=\"l-box-lrg pure-u-1 pure-u-md-2-5\" ng-if=\"!userPayload\" id=\"loginBox\">\n        <div ng-if=\"notAuthorizedError || notAdminError\">Please login or register</div>\n\n          <div ng-hide=\"userPayload\">\n            <user-form ng-show='user.logIn' form-type=\"Log In\" user-action=logIn></user-form>\n            <user-form ng-show='user.register' form-type=\"Register\" user-action=register> </user-form>\n          </div>\n\n          <br />\n\n          <div ng-if=\"!userPayload\">\n            <button ng-click='user.logIn=true; user.register=false' class=\"pure-button\"> Log In </button>\n            <button ng-click='user.register=true; user.logIn=false' class=\"pure-button\"> Register </button>\n            <button ng-click='user.authenticate(\"facebook\")' class=\"pure-button\"> Sign In With Facebook </button>\n          </div>\n      </div>\n\n    </div>\n  </div>\n\n  <div class=\"footer l-box is-center\">\n      Made by Whitney Harvey and Max Jacobsen\n  </div>\n</div>\n";
 
 /***/ },
-/* 19 */
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(24);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./home.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./home.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*\n * -- SPLASH STYLES --\n * This is the blue top section that appears on the page.\n */\n.splash-container {\n  background: #E5DD00;\n  z-index: 1;\n  overflow: hidden;\n  /* The following styles are required for the \"scroll-over\" effect */\n  width: 100%;\n  height: 88%;\n  top: 0;\n  left: 0;\n  position: fixed !important; }\n\n.splash {\n  /* absolute center .splash within .splash-container */\n  width: 80%;\n  height: 50%;\n  margin: auto;\n  position: absolute;\n  top: 100px;\n  left: 0;\n  bottom: 0;\n  right: 0;\n  text-align: center;\n  text-transform: uppercase; }\n\n/* This is the main heading that appears on the yellow section */\n.splash-head {\n  font-size: 25px;\n  font-weight: bold;\n  color: white;\n  border: 3px solid white;\n  padding: 1em 1.6em;\n  font-weight: 100;\n  border-radius: 5px;\n  line-height: 1em; }\n\n/* This is the subheading that appears on the blue section */\n.splash-subhead {\n  color: white;\n  letter-spacing: 0.05em;\n  opacity: 0.8; }\n\n/*\n * -- CONTENT STYLES --\n * This represents the content area (everything below the blue section)\n */\n.content-wrapper {\n  /* These styles are required for the \"scroll-over\" effect */\n  position: absolute;\n  top: 87%;\n  width: 100%;\n  min-height: 12%;\n  z-index: 2;\n  background: white; }\n\n/* This is the class used for the main content headers (<h2>) */\n.content-head {\n  font-weight: 400;\n  text-transform: uppercase;\n  letter-spacing: 0.1em;\n  margin: 2em 0 1em; }\n\n/* This is a modifier class used when the content-head is inside a ribbon */\n.content-head-ribbon {\n  color: white; }\n\n/* This is the class used for the content sub-headers (<h3>) */\n.content-subhead {\n  color: #1f8dd6; }\n\n.content-subhead i {\n  margin-right: 7px; }\n\n/* This is the class used for the dark-background areas. */\n.ribbon {\n  background: #2d3e50;\n  color: #aaa; }\n\n/* This is the class used for the footer */\n.footer {\n  background: #111; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38424,7 +38557,7 @@
 	  value: true
 	});
 	
-	var _gallery = __webpack_require__(20);
+	var _gallery = __webpack_require__(26);
 	
 	var _gallery2 = _interopRequireDefault(_gallery);
 	
@@ -38440,13 +38573,13 @@
 	};
 
 /***/ },
-/* 20 */
+/* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div> Search By Category:\n  <select ng-model='gallery.category'>\n    <option ng-repeat='category in gallery.categories' value='{{category}}'>{{category}}</option>\n  </select>\n  <button ui-sref='.category({categoryName:gallery.category, page:\"1\"})'>Search</button>\n</div>\n\n<div ui-view></div>\n";
+	module.exports = "<div class='search-by-category clear-nav'>\n  <div> Search By Category:\n    <select ng-model='gallery.category'>\n      <option ng-repeat='category in gallery.categories' value='{{category}}'>{{category}}</option>\n    </select>\n    <button class=\"pure-button\" ui-sref='.category({categoryName:gallery.category, page:\"1\"})'>Search</button>\n  </div>\n</div>\n<div ui-view></div>\n";
 
 /***/ },
-/* 21 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38455,11 +38588,9 @@
 	  value: true
 	});
 	
-	var _category = __webpack_require__(22);
+	var _category = __webpack_require__(28);
 	
 	var _category2 = _interopRequireDefault(_category);
-	
-	__webpack_require__(23);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38491,53 +38622,13 @@
 	};
 
 /***/ },
-/* 22 */
+/* 28 */
 /***/ function(module, exports) {
 
-	module.exports = "<h3> This is images page based on categories </h3>\n<div id='container'>\n  <div class='svgInfo' ng-repeat='image in svgImages' ui-sref='color.svg({svgId: image._id})'>\n    <div class='svgFile' ng-bind-html='image.svg'> </div>\n    <div>Title: {{image.title}} </div>\n  </div>\n</div>\n\n<div>See More\n  <ul>\n      <li ng-repeat=\"page in pages track by $index\">\n        <span ui-sref='{page:($index+1)}'>{{$index+1}}</span></li>\n  </ul>\n</div>\n";
+	module.exports = "<h3 class='center'> Category: <span class='cool-font'>{{selectedCategory}} </span> </h3>\n<div class='svgContainer'>\n  <div class='svgListInfo' ng-repeat='image in svgImages' ui-sref='color.svg({svgId: image._id})'>\n    <div>Title: {{image.title}} </div>\n    <div class='svgListImage' ng-bind-html='image.svg'> </div>\n  </div>\n</div>\n\n<div class='center'>\n  <ul class='seeMoreImages'>\n      <li>See More: </li>\n      <li ng-repeat=\"page in pages track by $index\">\n        <a ui-sref='{page:($index+1)}'>{{$index+1}}</a>\n      </li>\n  </ul>\n</div>\n";
 
 /***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(24);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./category.scss", function() {
-				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./category.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "#container {\n  max-width: 100%;\n  max-height: 100%;\n  margin: 5px auto;\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  flex-flow: row wrap;\n  margin: 20px; }\n\n.svgFile {\n  width: 100px;\n  max-width: 100%;\n  max-height: 100px;\n  border: solid 1px black;\n  margin: 0 10px; }\n\n.svgInfo {\n  width: 100px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  flex-flow: column;\n  margin: 5px 20px; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 25 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38546,7 +38637,7 @@
 	  value: true
 	});
 	
-	var _personalGallery = __webpack_require__(26);
+	var _personalGallery = __webpack_require__(30);
 	
 	var _personalGallery2 = _interopRequireDefault(_personalGallery);
 	
@@ -38572,13 +38663,13 @@
 	};
 
 /***/ },
-/* 26 */
+/* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<h3> This is images page based on categories </h3>\n<h4> You are currently signed in as {{personal.user.displayName}} </h4>\n<div id='container'>\n  <div class='svgInfo' ng-repeat='image in personal.svgImages' ui-sref='color.svg({svgId:image.original._id, personal:image._id})'>\n    <div class='svgFile' ng-bind-html='image.svg'></div>\n    <div>Title: {{image.original.title}}</div>\n  </div>\n</div>\n";
+	module.exports = "<h3 class='center clear-nav'> Personal Gallery </h3>\n<h4 class='center'> You are currently signed in as {{personal.user.displayName}} </h4>\n<div class='svgContainer'>\n  <div class='svgListInfo' ng-repeat='image in personal.svgImages' ui-sref='color.svg({svgId:image.original._id, personal:image._id})'>\n    <div>Title: {{image.original.title}}</div>\n    <div class='svgListImage' ng-bind-html='image.svg'></div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 27 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38587,40 +38678,11 @@
 	  value: true
 	});
 	
-	var _profile = __webpack_require__(28);
-	
-	var _profile2 = _interopRequireDefault(_profile);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = {
-	  url: '/profile',
-	  data: {
-	    authReq: true
-	  },
-	  template: _profile2.default,
-	  controller: ['$scope', function ($scope) {}]
-	};
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	module.exports = "<h3> This is the profile page </h3>\n";
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _admin = __webpack_require__(30);
+	var _admin = __webpack_require__(32);
 	
 	var _admin2 = _interopRequireDefault(_admin);
+	
+	__webpack_require__(33);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38635,13 +38697,53 @@
 	};
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form >\n  <h3>Add SVG File </h3>\n    <div>\n      <label for=\"name\">Name:  </label>\n      <input type=\"text\" ng-model=\"image.title\" placeholder=\"Image Name\">\n    </div>\n    <div>\n      Category:\n      <select ng-model='image.category'>\n        <option ng-repeat='category in image.categories' value='{{category}}'>{{category}}</option>\n      </select>\n    </div>\n    <div>\n      <label for=\"svg file\">Svg content</label>\n      <textarea ng-model=\"image.svg\" rows=\"10\" cols=\"80\"> </textarea>\n    </div>\n  <button type=\"submit\" ng-click='image.submit(image)'>Submit</button>\n  <div ng-if=\"success\">Added SVG image</div>\n</form>\n";
+	module.exports = "<h3 class='center-text clear-nav'>Add SVG File </h3>\n<form id='adminForm' name='svgForm' novalidate>\n    <div>\n      <label for=\"title\">Title:  </label>\n      <input name='title' type=\"text\"\n      ng-model=\"image.title\"\n      placeholder=\"Image Title\"\n      ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 250, blur: 0 } }\"\n      required>\n    </div>\n    <div ng-messages=\"svgForm.title.$error\" ng-if=\"svgForm.$submitted || svgForm.title.$touched\">\n      <div class='form-error' ng-message=\"required\">Title Required</div>\n    </div>\n    <br>\n    <div>\n      <label for=\"category\">Category:  </label>\n      <select name='categoryForm'\n        ng-model='image.category'\n        ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 250, blur: 0 } }\"\n        required>\n        <option value=''>-- Select Category -- </option>\n        <option ng-repeat='category in image.categories' value='{{category}}'>{{category}}</option>\n      </select>\n    </div>\n    <div ng-messages=\"svgForm.categoryForm.$error\" ng-if=\"svgForm.$submitted || svgForm.categoryForm.$touched\">\n      <div class='form-error' ng-message=\"required\">Category Required</div>\n    </div>\n    <br>\n    <div>\n      <div class='alignVertical'>\n        <label for=\"svg file\">Svg Content:  </label>\n        <textarea name='svgFile' ng-model=\"image.svg\" rows=\"10\" cols=\"80\" required> </textarea>\n      </div>\n    </div>\n    <div ng-messages=\"svgForm.svgFile.$error\" ng-if=\"svgForm.$submitted || svgForm.svgFile.$touched\">\n      <div class='form-error' ng-message=\"required\">Svg File Required</div>\n    </div>\n  <br>\n  <button class=\"pure-button\" type=\"submit\" ng-click='svgForm.$valid ? image.submit(image) : return'>Submit</button>\n\n  <div ng-if=\"success\">Added SVG image</div>\n</form>\n";
 
 /***/ },
-/* 31 */
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(34);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./admin.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./admin.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".center-text {\n  text-align: center; }\n\n#adminForm {\n  display: flex;\n  justify-content: flex-start;\n  flex-direction: column;\n  align-items: center; }\n  #adminForm .alignVertical {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    justify-content: center; }\n    #adminForm .alignVertical textarea {\n      width: 100%;\n      max-width: 400px;\n      margin: 10px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38650,7 +38752,7 @@
 	  value: true
 	});
 	
-	var _color = __webpack_require__(32);
+	var _color = __webpack_require__(36);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
@@ -38665,13 +38767,13 @@
 	};
 
 /***/ },
-/* 32 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports = "<div ui-view></div>\n";
 
 /***/ },
-/* 33 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38680,11 +38782,9 @@
 	  value: true
 	});
 	
-	var _svg = __webpack_require__(34);
+	var _svg = __webpack_require__(38);
 	
 	var _svg2 = _interopRequireDefault(_svg);
-	
-	__webpack_require__(35);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38711,53 +38811,13 @@
 	};
 
 /***/ },
-/* 34 */
+/* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id='controls'>\n  <h5>Image Name: {{svg.name}} </h5>\n  <div ng-show='added'>\n    <button ng-click='svg.reset()'> Reset To Blank </button>\n    <button ng-click='svg.lastSaved()'> Remove Changes </button>\n    <button ng-click='svg.save()'> Save </button>\n    <button ng-click='svg.delete()'>Delete</button>\n  </div>\n    <button ng-hide='added' ng-click=\"addToPersonal()\">Color</button>\n</div>\n\n<div ng-show=\"updated\">Updated!</div>\n<!-- <div ng-bind-html=\"svg.image\"></div> -->\n\n<div id='color'>\n  <div id='svgImage' ng-click='svg.color($event)' ng-bind-html='svg.image'></div>\n  <div ng-show='added'>\n    <color-picker ng-model=\"svg.chosenColor\"></color-picker>\n    <div id='colorPallette'> current color :\n      <span id='currentColor' style='background-color: {{svg.chosenColor}};'></span>\n    </div>\n  </div>\n</div>\n";
+	module.exports = "<div id='controls'>\n  <h4>Image Name: <span class='cool-font'>{{svg.name}} </span> </h4>\n  <div ng-show='added'>\n    <button ng-click='svg.reset()'> Reset To Blank </button>\n    <button ng-click='svg.lastSaved()'> Remove Changes </button>\n    <button ng-click='svg.save()'> Save </button>\n    <button ng-click='svg.delete()'>Delete</button>\n  </div>\n    <button ng-hide='added' ng-click=\"addToPersonal()\">Color</button>\n</div>\n\n<div ng-show=\"updated\">Updated!</div>\n<!-- <div ng-bind-html=\"svg.image\"></div> -->\n\n<div class='svgContainer'>\n  <div id='svgImage' ng-click='svg.color($event)' ng-bind-html='svg.image'></div>\n  <div ng-show='added'>\n    <color-picker ng-model=\"svg.chosenColor\"></color-picker>\n    <div id='colorPallette'> current color :\n      <span id='currentColor' style='background-color: {{svg.chosenColor}};'></span>\n    </div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(36);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./svg.scss", function() {
-				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./../../../../../node_modules/postcss-loader/index.js!./../../../../../node_modules/sass-loader/index.js!./svg.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "#color {\n  max-width: 100%;\n  max-height: 100%;\n  margin: 5px auto;\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  flex-flow: row wrap;\n  margin: 20px; }\n\n#controls {\n  margin: 0 auto;\n  text-align: center; }\n\n#svgImage {\n  width: 500px;\n  max-width: 100%;\n  max-height: 500px;\n  border: solid 2px black;\n  margin: 0 10px;\n  background-color: white; }\n\n#colorPallette {\n  text-align: center;\n  display: flex;\n  align-items: center;\n  margin: 10px; }\n\n#currentColor {\n  width: 25px;\n  height: 25px;\n  border: solid 1px black;\n  margin-left: 5px; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38766,25 +38826,21 @@
 	  value: true
 	});
 	
-	var _angular = __webpack_require__(5);
+	var _angular = __webpack_require__(9);
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _galleryFactory = __webpack_require__(38);
+	var _galleryFactory = __webpack_require__(40);
 	
 	var _galleryFactory2 = _interopRequireDefault(_galleryFactory);
 	
-	var _svgFactory = __webpack_require__(39);
+	var _svgFactory = __webpack_require__(41);
 	
 	var _svgFactory2 = _interopRequireDefault(_svgFactory);
 	
-	var _userService = __webpack_require__(40);
+	var _userService = __webpack_require__(42);
 	
 	var _userService2 = _interopRequireDefault(_userService);
-	
-	var _adminFactory = __webpack_require__(41);
-	
-	var _adminFactory2 = _interopRequireDefault(_adminFactory);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -38793,12 +38849,11 @@
 	(0, _galleryFactory2.default)(factories);
 	(0, _svgFactory2.default)(factories);
 	(0, _userService2.default)(factories);
-	(0, _adminFactory2.default)(factories);
 	
 	exports.default = factories.name;
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38820,7 +38875,7 @@
 	};
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38842,7 +38897,7 @@
 	};
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38863,6 +38918,9 @@
 	        method: 'POST',
 	        data: user
 	      }).then(function (res) {
+	        $window.localStorage.setItem('satellizer_token', res.data.token);
+	        $rootScope.notAdminError = false;
+	        $rootScope.notAuthorizedError = false;
 	        return res.data;
 	      });
 	    };
@@ -38873,6 +38931,9 @@
 	        method: 'POST',
 	        data: user
 	      }).then(function (res) {
+	        $window.localStorage.setItem('satellizer_token', res.data.token);
+	        $rootScope.notAdminError = false;
+	        $rootScope.notAuthorizedError = false;
 	        return res.data;
 	      });
 	    };
@@ -38882,88 +38943,20 @@
 	      if (token) {
 	        $rootScope.userPayload = jwtHelper.decodeToken(token);
 	      }
+	      $rootScope.notAdminError = false;
+	      $rootScope.notAuthorizedError = false;
 	    };
 	
 	    service.removeUser = function () {
 	      window.localStorage.removeItem('satellizer_token');
 	      $rootScope.userPayload = undefined;
+	      $rootScope.notAdminError = false;
+	      $rootScope.notAuthorizedError = false;
 	    };
 	
 	    return service;
 	  });
 	};
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	exports.default = function (ngModule) {
-	
-	  ngModule.factory('AdminService', function ($rootScope, $window, jwtHelper) {
-	
-	    var service = {};
-	
-	    service.checkUser = function () {
-	      var token = $window.localStorage.getItem('satellizer_token');
-	      if (token) {
-	        var payload = jwtHelper.decodeToken(token);
-	        $rootScope.root.admin = payload.admin;
-	      } else {
-	        $rootScope.root.admin = false;
-	      }
-	    };
-	
-	    return service;
-	  });
-	};
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _mainHeader = __webpack_require__(43);
-	
-	var _mainHeader2 = _interopRequireDefault(_mainHeader);
-	
-	var _mainNav = __webpack_require__(47);
-	
-	var _mainNav2 = _interopRequireDefault(_mainNav);
-	
-	var _navLink = __webpack_require__(51);
-	
-	var _navLink2 = _interopRequireDefault(_navLink);
-	
-	var _userForm = __webpack_require__(53);
-	
-	var _userForm2 = _interopRequireDefault(_userForm);
-	
-	var _loader = __webpack_require__(55);
-	
-	var _loader2 = _interopRequireDefault(_loader);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var directives = angular.module('directives', []);
-	
-	(0, _mainHeader2.default)(directives);
-	(0, _mainNav2.default)(directives);
-	(0, _navLink2.default)(directives);
-	(0, _userForm2.default)(directives);
-	(0, _loader2.default)(directives);
-	
-	exports.default = directives.name;
 
 /***/ },
 /* 43 */
@@ -38972,79 +38965,33 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
-	exports.default = function (ngModule) {
-		ngModule.directive('mainHeader', function () {
-			return {
-				replace: true,
-				restrict: 'E',
-				template: _mainHeader2.default,
-				scope: {
-					mainTitle: '@'
-				},
-				controller: ['$scope', function ($scope) {}]
-			};
-		});
-	};
+	var _mainNav = __webpack_require__(44);
 	
-	var _mainHeader = __webpack_require__(44);
-
-	var _mainHeader2 = _interopRequireDefault(_mainHeader);
-
-	__webpack_require__(45);
-
+	var _mainNav2 = _interopRequireDefault(_mainNav);
+	
+	var _userForm = __webpack_require__(48);
+	
+	var _userForm2 = _interopRequireDefault(_userForm);
+	
+	var _loader = __webpack_require__(50);
+	
+	var _loader2 = _interopRequireDefault(_loader);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var directives = angular.module('directives', []);
+	
+	(0, _mainNav2.default)(directives);
+	(0, _userForm2.default)(directives);
+	(0, _loader2.default)(directives);
+	
+	exports.default = directives.name;
 
 /***/ },
 /* 44 */
-/***/ function(module, exports) {
-
-	module.exports = "<header class='main-header'>\n  <h1> {{mainTitle}} </h1>\n</header>\n";
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(46);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-header.scss", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/postcss-loader/index.js!./../../../../node_modules/sass-loader/index.js!./main-header.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".main-header {\n  display: flex;\n  justify-content: center; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39072,28 +39019,28 @@
 	  });
 	};
 	
-	var _mainNav = __webpack_require__(48);
+	var _mainNav = __webpack_require__(45);
 
 	var _mainNav2 = _interopRequireDefault(_mainNav);
 
-	__webpack_require__(49);
+	__webpack_require__(46);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 48 */
+/* 45 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class='main-nav'>\n  <ul>\n    <nav-link state='home' page-name='Home' />\n    <nav-link state='gallery.category({categoryName:\"Popular\"})' page-name='Gallery' />\n    <nav-link state='personalGallery' page-name='Personal Gallery' />\n    <nav-link state='profile' page-name='Profile' />\n    <nav-link state='admin' ng-show='userPayload.admin' page-name='Admin' />\n    <li ng-show=\"userPayload\" ng-click=\"logout()\">Logout</li>\n  </ul>\n</nav>\n";
+	module.exports = "<nav class=\"header\">\n  <div class=\"home-menu pure-menu pure-menu-horizontal pure-menu-fixed\">\n    <a class=\"pure-menu-heading\" ui-sref=\"home\">Relax and Color</a>\n\n    <ul class=\"pure-menu-list\">\n      <li class=\"pure-menu-item\"><a ui-sref=\"home\" class=\"pure-menu-link\">Home</a></li>\n      <li class=\"pure-menu-item\"><a ui-sref=\"gallery.category({categoryName:'Popular'})\" class=\"pure-menu-link\">Gallery</a></li>\n      <li class=\"pure-menu-item\"><a ui-sref=\"personalGallery\" class=\"pure-menu-link\">Personal Gallery</a></li>\n      <li class=\"pure-menu-item\"><a ui-sref=\"admin\" ng-show='userPayload.admin' class=\"pure-menu-link\">Admin</a></li>\n      <li class=\"pure-menu-item\"><a ng-click=\"logout()\" ng-show='userPayload.admin' class=\"pure-menu-link\">Logout</a></li>\n    </ul>\n  </div>\n</nav>\n\n";
 
 /***/ },
-/* 49 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(50);
+	var content = __webpack_require__(47);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -39113,7 +39060,7 @@
 	}
 
 /***/ },
-/* 50 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -39121,49 +39068,13 @@
 	
 	
 	// module
-	exports.push([module.id, ".main-nav ul {\n  list-style: none;\n  display: flex;\n  justify-content: center;\n  flex-direction: row; }\n\n.main-nav li {\n  padding: 5px; }\n", ""]);
+	exports.push([module.id, "/*\n * -- MENU STYLES --\n * I want to customize how my .pure-menu looks at the top of the page\n */\n.home-menu {\n  padding: 0.5em;\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);\n  background: #008C74; }\n\n.pure-menu.pure-menu-fixed {\n  border-bottom: none;\n  z-index: 4; }\n\n.home-menu .pure-menu-heading {\n  color: white;\n  font-weight: 400;\n  font-size: 120%; }\n\n.home-menu .pure-menu-selected a {\n  color: white; }\n\n.home-menu a {\n  color: white; }\n\n.home-menu li a:hover,\n.home-menu li a:focus {\n  background: none;\n  border: none;\n  color: #AECFE5; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	exports.default = function (ngModule) {
-		ngModule.directive('navLink', function () {
-			return {
-				replace: true,
-				restrict: 'E',
-				template: _navLink2.default,
-				scope: {
-					state: '@',
-					pageName: '@'
-				}
-			};
-		});
-	};
-	
-	var _navLink = __webpack_require__(52);
-
-	var _navLink2 = _interopRequireDefault(_navLink);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 52 */
-/***/ function(module, exports) {
-
-	module.exports = "<li> <a ui-sref={{state}}>{{pageName}}</a> </li>\n";
-
-/***/ },
-/* 53 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39193,20 +39104,20 @@
 		});
 	};
 	
-	var _userForm = __webpack_require__(54);
+	var _userForm = __webpack_require__(49);
 
 	var _userForm2 = _interopRequireDefault(_userForm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 54 */
+/* 49 */
 /***/ function(module, exports) {
 
-	module.exports = "<form >\n  <h3>{{formType}}</h3>\n    <div>\n      <label for=\"email\">Email: </label>\n      <input type=\"text\" ng-model=\"userInfo.email\" placeholder=\"Email\">\n    </div>\n    <br>\n    <div>\n      <label for=\"password\">Password: </label>\n      <input type=\"password\" ng-model=\"userInfo.password\" placeholder=\"Password\">\n    </div>\n    <br>\n  <button type=\"submit\" ng-click=signin()>Submit</button>\n</form>\n";
+	module.exports = "<form name='userForm' novalidate>\n  <h3>{{formType}}</h3>\n  <form name='userForm' novalidate>\n\n    <div>\n      <label for=\"email\">Email: </label>\n      <input type=\"email\"\n        name=\"email\"\n        ng-model=\"userInfo.email\"\n        placeholder=\"Email\"\n        ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 250, blur: 0 } }\"\n        no-whitespace-validator\n        required\n        >\n      <div ng-messages=\"userForm.email.$error\" ng-if=\"userForm.$submitted || userForm.email.$touched\">\n        <div class='form-error' ng-message=\"required\">Email Required</div>\n        <div class='form-error' ng-message=\"email\">Needs to be a valid email...</div>\n        <div class='form-error' ng-message=\"noWhitespaceValidator\">Email cannot contain spaces </div>\n      </div>\n    </div>\n\n    <br>\n\n    <div>\n      <label for=\"password\">Password: </label>\n      <input type=\"password\"\n        ng-model=\"userInfo.password\"\n        placeholder=\"Password\"\n        name=\"password\"\n        ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }\"\n        no-whitespace-validator\n        password-params-validator\n        pattern='[a-zA-Z\\d]+'\n        minLength='6'\n        required\n        >\n      <div ng-messages=\"userForm.password.$error\" ng-if=\"userForm.$submitted || userForm.password.$touched\">\n         <div class='form-error' ng-message=\"required\" >Password Required</div>\n         <div class='form-error' ng-message=\"minlength\">Password must be at least 6 characters...</div>\n         <div class='form-error' ng-message=\"noWhitespaceValidator\">Password cannot contain spaces</div>\n         <div class='form-error' ng-message=\"passwordParamsValidator\">Password must contain at least one a-z, A-Z, 0-9</div>\n         <div class='form-error' ng-message=\"pattern\">Can only contain letters or numbers</div>\n      </div>\n      <div ng-messages=\"userForm.password.$valid\" ng-if=\"userForm.$submitted || userForm.password.$touched\">\n         <div class='form-success'>Password Valid</div>\n      </div>\n    </div>\n\n    <br>\n\n    <button type=\"submit\" ng-click='userForm.$valid ? signin() : return' class=\"pure-button\">Submit</button>\n\n</form>\n";
 
 /***/ },
-/* 55 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39229,28 +39140,28 @@
 		});
 	};
 	
-	var _loader = __webpack_require__(56);
+	var _loader = __webpack_require__(51);
 
 	var _loader2 = _interopRequireDefault(_loader);
 
-	__webpack_require__(57);
+	__webpack_require__(52);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 56 */
+/* 51 */
 /***/ function(module, exports) {
 
 	module.exports = "<div id='loader'>\n  <!-- https://github.com/oskargustafsson/CSS-spinners -->\n  <div class=\"spinner colorwheel\" id=\"colorwheel\">\n    <div class=\"centerpiece\"></div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 57 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(58);
+	var content = __webpack_require__(53);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -39270,7 +39181,7 @@
 	}
 
 /***/ },
-/* 58 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -39278,13 +39189,13 @@
 	
 	
 	// module
-	exports.push([module.id, "#loader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n/*https://github.com/oskargustafsson/CSS-spinners/blob/gh-pages/style.css */\n/* GENERAL */\n@-webkit-keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@-webkit-keyframes rotate {\n  from {\n    -webkit-transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@keyframes rotate {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(360deg); } }\n\n/* COLOR WHEEL */\n.spinner.colorwheel {\n  position: relative;\n  display: inline-block;\n  width: 4em;\n  height: 4em;\n  overflow: hidden;\n  border-radius: 100%;\n  z-index: 0; }\n\n.spinner.colorwheel::before,\n.spinner.colorwheel::after {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.spinner.colorwheel::before {\n  background: linear-gradient(to right, green, yellow);\n  -webkit-animation: rotate 2.5s linear infinite;\n  animation: rotate 2.5s linear infinite; }\n\n.spinner.colorwheel::after {\n  background: linear-gradient(to bottom, red, blue);\n  -webkit-animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite;\n  animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite; }\n\n.spinner .centerpiece {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  border-radius: 100%;\n  box-sizing: border-box;\n  border-left: 0.5em solid transparent;\n  border-right: 0.5em solid transparent;\n  border-bottom: 0.5em solid rgba(255, 255, 255, 0.3);\n  border-top: 0.5em solid rgba(255, 255, 255, 0.3);\n  -webkit-animation: rotate 0.8s linear infinite;\n  animation: rotate 0.8s linear infinite; }\n", ""]);
+	exports.push([module.id, "#loader {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-top: 100px; }\n\n/*https://github.com/oskargustafsson/CSS-spinners/blob/gh-pages/style.css */\n/* GENERAL */\n@-webkit-keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@keyframes fade {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 0.2; } }\n\n@-webkit-keyframes rotate {\n  from {\n    -webkit-transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg); } }\n\n@keyframes rotate {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(360deg); } }\n\n/* COLOR WHEEL */\n.spinner.colorwheel {\n  position: relative;\n  display: inline-block;\n  width: 4em;\n  height: 4em;\n  overflow: hidden;\n  border-radius: 100%;\n  z-index: 0; }\n\n.spinner.colorwheel::before,\n.spinner.colorwheel::after {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%; }\n\n.spinner.colorwheel::before {\n  background: linear-gradient(to right, green, yellow);\n  -webkit-animation: rotate 2.5s linear infinite;\n  animation: rotate 2.5s linear infinite; }\n\n.spinner.colorwheel::after {\n  background: linear-gradient(to bottom, red, blue);\n  -webkit-animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite;\n  animation: fade 2s infinite alternate, rotate 2.5s linear reverse infinite; }\n\n.spinner .centerpiece {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  border-radius: 100%;\n  box-sizing: border-box;\n  border-left: 0.5em solid transparent;\n  border-right: 0.5em solid transparent;\n  border-bottom: 0.5em solid rgba(255, 255, 255, 0.3);\n  border-top: 0.5em solid rgba(255, 255, 255, 0.3);\n  -webkit-animation: rotate 0.8s linear infinite;\n  animation: rotate 0.8s linear infinite; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 59 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39293,31 +39204,112 @@
 	  value: true
 	});
 	
-	var _angular = __webpack_require__(5);
+	var _noWhitespaceValidator = __webpack_require__(55);
+	
+	var _noWhitespaceValidator2 = _interopRequireDefault(_noWhitespaceValidator);
+	
+	var _passwordParamsValidator = __webpack_require__(56);
+	
+	var _passwordParamsValidator2 = _interopRequireDefault(_passwordParamsValidator);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var validators = angular.module('validators', []);
+	
+	(0, _noWhitespaceValidator2.default)(validators);
+	(0, _passwordParamsValidator2.default)(validators);
+	
+	exports.default = validators.name;
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.directive('noWhitespaceValidator', function () {
+	    return {
+	      require: 'ngModel',
+	      link: function link($scope, element, attrs, ngModel) {
+	        ngModel.$validators.noWhitespaceValidator = function (username) {
+	          if (!/[\s+$]/.test(username)) {
+	            return true;
+	          } else {
+	            return false;
+	          }
+	        };
+	      }
+	    };
+	  });
+	};
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (ngModule) {
+	  ngModule.directive('passwordParamsValidator', function () {
+	    return {
+	      require: 'ngModel',
+	      link: function link($scope, element, attrs, ngModel) {
+	        ngModel.$validators.passwordParamsValidator = function (password) {
+	          if (/[A-Z]+/.test(password) && /[\d]+/.test(password) && /[a-z]+/.test(password)) {
+	            return true;
+	          } else {
+	            return false;
+	          }
+	        };
+	      }
+	    };
+	  });
+	};
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _angular = __webpack_require__(9);
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _adminCtrl = __webpack_require__(60);
+	var _adminCtrl = __webpack_require__(58);
 	
 	var _adminCtrl2 = _interopRequireDefault(_adminCtrl);
 	
-	var _svgCtrl = __webpack_require__(61);
+	var _svgCtrl = __webpack_require__(59);
 	
 	var _svgCtrl2 = _interopRequireDefault(_svgCtrl);
 	
-	var _galleryCtrl = __webpack_require__(62);
+	var _galleryCtrl = __webpack_require__(60);
 	
 	var _galleryCtrl2 = _interopRequireDefault(_galleryCtrl);
 	
-	var _categoryCtrl = __webpack_require__(63);
+	var _categoryCtrl = __webpack_require__(61);
 	
 	var _categoryCtrl2 = _interopRequireDefault(_categoryCtrl);
 	
-	var _homeCtrl = __webpack_require__(64);
+	var _homeCtrl = __webpack_require__(62);
 	
 	var _homeCtrl2 = _interopRequireDefault(_homeCtrl);
 	
-	var _personalGalleryCtrl = __webpack_require__(65);
+	var _personalGalleryCtrl = __webpack_require__(63);
 	
 	var _personalGalleryCtrl2 = _interopRequireDefault(_personalGalleryCtrl);
 	
@@ -39335,7 +39327,7 @@
 	exports.default = stateCtrls.name;
 
 /***/ },
-/* 60 */
+/* 58 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39357,7 +39349,7 @@
 	};
 
 /***/ },
-/* 61 */
+/* 59 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39420,7 +39412,7 @@
 	};
 
 /***/ },
-/* 62 */
+/* 60 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39438,7 +39430,7 @@
 	};
 
 /***/ },
-/* 63 */
+/* 61 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39448,14 +39440,15 @@
 	});
 	
 	exports.default = function (ngModule) {
-	  ngModule.controller('categoryCtrl', ['$scope', 'svg', function ($scope, svg) {
+	  ngModule.controller('categoryCtrl', ['$scope', 'svg', '$stateParams', function ($scope, svg, $stateParams) {
+	    $scope.selectedCategory = $stateParams.categoryName;
 	    $scope.svgImages = svg.images;
 	    $scope.pages = new Array(Math.ceil(svg.count / 10));
 	  }]);
 	};
 
 /***/ },
-/* 64 */
+/* 62 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39465,8 +39458,15 @@
 	});
 	
 	exports.default = function (ngModule) {
-	  ngModule.controller('homeCtrl', function ($scope, $auth, UserService) {
+	  ngModule.controller('homeCtrl', function ($scope, $auth, UserService, $anchorScroll, $rootScope, $location) {
+	
+	    if ($rootScope.notAuthorizedError || $rootScope.notAdminError) {
+	      $location.hash('loginBox');
+	      $anchorScroll();
+	    }
+	
 	    $scope.user = {};
+	    $scope.user.register = true;
 	    $scope.user.authenticate = function (provider) {
 	      $auth.authenticate(provider).then(function (response) {
 	        UserService.setUser();
@@ -39491,7 +39491,7 @@
 	};
 
 /***/ },
-/* 65 */
+/* 63 */
 /***/ function(module, exports) {
 
 	'use strict';
